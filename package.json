@@ -15,7 +15,10 @@
   "dependencies": {
     "express": "3.0.0rc4",
     "jade": "*",
-    "less-middleware": "*"
+    "less-middleware": "*",
+    "http-auth": "*",
+    "mongoose": "*",
+    "express-validator": "*"
   },
   "devDependencies": {
     "mocha": "~1.4.2"
