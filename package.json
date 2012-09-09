@@ -18,7 +18,8 @@
     "less-middleware": "*",
     "http-auth": "*",
     "mongoose": "*",
-    "express-validator": "*"
+    "underscore": "*",
+    "github-flavored-markdown": "*"
   },
   "devDependencies": {
     "mocha": "~1.4.2"

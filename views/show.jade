@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  .container
+    h1.article-title= article.title
+    .article-meta
+      small by #{article.author}, #{article.updated_at}
+    .article-content
+      !{markdown(article.content)}

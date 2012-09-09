@@ -8,7 +8,9 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , auth = require('http-auth');
+  , auth = require('http-auth')
+  , mongoose = require('mongoose')
+  , config = require('./config');
 
 var app = express();
 
@@ -44,9 +46,16 @@ app.all('*', function (req, res, next) {
   basic.apply(req, res, function () { next(); });
 });
 
+mongoose.connect(config.mongo.url);
+
 // Main routes
 app.get('/', routes.index);
-// app.get('/users', user.list);
+app.post('/', routes.create);
+app.get('/new', routes.new);
+app.get('/:article', routes.show);
+app.get('/:article/edit', routes.edit);
+app.put('/', routes.update)
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
