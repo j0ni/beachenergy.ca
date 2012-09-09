@@ -34,12 +34,12 @@ $(function () {
 
   $('.edit-article').live('click', function (event) {
     event.preventDefault();
-    loadArticleForm(event.target.href, 'Edit');
+    loadArticleForm(event.target.href, 'Edit Article');
   });
 
   $('.new-article').live('click', function (event) {
     event.preventDefault();
-    loadArticleForm('/new', 'New');
+    loadArticleForm('/new', 'New Article');
   });
 });
 
