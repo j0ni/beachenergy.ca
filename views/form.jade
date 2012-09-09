@@ -1,18 +1,18 @@
-form(action='/', method='POST', class='form-horizontal')
+form(method='POST', class='form-horizontal')
   .control-group
     label.control-label Title
     .controls
-      input(type='text', name='title') #{article.title}
+      input(type='text', name='title', value=article.title)
 
   .control-group
     label.control-label Slug
     .controls
-      input(type='text', name='slug') #{article.slug}
+      input(type='text', name='slug', value=article.slug)
 
   .control-group
     label.control-label Author
     .controls
-      input(type='text', name='author') #{article.author}
+      input(type='text', name='author', value=article.author)
 
   .control-group
     label.control-label Content
@@ -22,4 +22,4 @@ form(action='/', method='POST', class='form-horizontal')
   .control-group
     label.control-label Visible
     .controls
-      input(type='checkbox', name='visible') #{article.visible}
+      input(type='checkbox', name='visible', checked=article.visible)

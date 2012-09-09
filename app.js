@@ -53,8 +53,8 @@ app.get('/', routes.index);
 app.post('/', routes.create);
 app.get('/new', routes.new);
 app.get('/:article', routes.show);
+app.post('/:article', routes.update)
 app.get('/:article/edit', routes.edit);
-app.put('/', routes.update)
 
 
 http.createServer(app).listen(app.get('port'), function(){

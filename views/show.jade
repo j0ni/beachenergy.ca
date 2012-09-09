@@ -4,6 +4,7 @@ block content
   .container
     h1.article-title= article.title
     .article-meta
-      small by #{article.author}, #{article.updated_at}
+      small by #{article.author}, #{article.updated_at} &nbsp;
+        a(href='/'+article.slug+'/edit', class='edit-article') edit article
     .article-content
       !{markdown(article.content)}

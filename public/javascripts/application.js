@@ -1,22 +1,23 @@
 $(function () {
+  var $modal = $('#modal');
+
   $('.sign-in').live('click', function (event) {
     event.preventDefault();
-
-    $('#modal').modal('show');
+    alert('sign in not implemented yet');
   });
 
-  $('.new-article').live('click', function (event) {
-    event.preventDefault();
-    var $modal = $('#modal');
-
+  function loadArticleForm(url, header) {
     $.ajax({
-      url: '/new',
+      url: url,
       dataType: 'html'
     }).done(function (html) {
-      $modal.find('.modal-header h3').html('New Article');
+      $modal.find('.modal-header h3').html(header);
       $modal.find('.modal-body').html(html);
 
       var $form = $modal.find('form');
+      var action = '/' + $form.find('input[name="slug"]').attr('value');
+
+      $form.attr('action', action);
 
       $('.btn-primary').live('click', function (event) {
         event.preventDefault();
@@ -28,7 +29,17 @@ $(function () {
       });
 
       $modal.modal('show');
-    });
+    })
+  }
+
+  $('.edit-article').live('click', function (event) {
+    event.preventDefault();
+    loadArticleForm(event.target.href, 'Edit');
+  });
+
+  $('.new-article').live('click', function (event) {
+    event.preventDefault();
+    loadArticleForm('/new', 'New');
   });
 });
 

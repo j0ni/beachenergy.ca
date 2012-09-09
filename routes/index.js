@@ -62,7 +62,8 @@ exports.create = function (req, res) {
 }
 
 exports.update = function (req, res) {
-  Article.findOneAndUpdate({slug: req.body['article']}, buildArticle(req.body), function (error, article) {
+  console.log(util.inspect(req.params));
+  Article.findOneAndUpdate({slug: req.params['article']}, buildArticle(req.body), function (error, article) {
     if (checkError(error))
       return;
 
