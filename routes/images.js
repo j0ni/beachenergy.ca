@@ -3,6 +3,7 @@
 var Image = require('../datamodel/image');
 var util = require('util');
 var fs = require('fs');
+var _ = require('underscore');
 
 exports.index = function (req, res) {
   var limit = parseInt(req.query.limit) || 3;
@@ -93,6 +94,30 @@ exports.update = function (req, res) {
   });
 };
 
+function buildImage(req, image) {
+  image = image || new Image();
+
+  function getTags() {
+    var tags = req.body['tags'] || '';
+    tags = tags.split(/ +/);
+    tags = _.select(tags, function (tag) { return tag.length > 0; });
+    if (tags.length > 0)
+      return tags;
+  }
+
+  var slug = req.body['slug'] || '';
+  var tags = getTags();
+
+  return {
+    title: req.body['title'] || image.title,
+    slug: slug.toLowerCase().replace(/ +/g, '-') || image.slug,
+    tags: tags || image.tags,
+    type: req.files.image.type || image.type,
+    filename: req.files.image.path.substring(req.files.image.path.lastIndexOf('/')) || image.filename,
+    visible: req.body['visible'] || image.visible
+  };
+}
+
 function sendForm(image, res) {
   res.render('images/form', { image: image });
 }
@@ -103,4 +128,13 @@ function checkError(error, res) {
     res.send(500, { error: error });
     return true;
   }
+}
+
+function checkSaveError(error, res) {
+  if (error && error['name'] && error['name'] === 'ValidationError') {
+    res.send(400, { error: error });
+    return true;
+  }
+
+  return checkError(error, res);
 }
