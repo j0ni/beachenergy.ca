@@ -18,6 +18,7 @@ module.exports = (function () {
   ArticleSchema.index({author: 1});
   ArticleSchema.index({title: 1});
   ArticleSchema.index({slug: 1}, {unique: true});
+  ArticleSchema.index({updated_at: 1});
 
   ArticleSchema.pre('save', function (next) {
     var now = new Date();

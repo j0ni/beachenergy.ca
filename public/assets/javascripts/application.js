@@ -15,7 +15,7 @@ $(function () {
       $modal.find('.modal-body').html(html);
 
       var $form = $modal.find('form');
-      var action = '/' + $form.find('input[name="slug"]').attr('value');
+      var action = '/articles/' + $form.find('input[name="slug"]').attr('value');
 
       $form.attr('action', action);
 
@@ -39,7 +39,6 @@ $(function () {
 
   $('.new-article').live('click', function (event) {
     event.preventDefault();
-    loadArticleForm('/new', 'New Article');
+    loadArticleForm('/articles/new', 'New Article');
   });
 });
-

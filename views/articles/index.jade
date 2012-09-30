@@ -15,7 +15,7 @@ block content
           h2 #{article.title}
           .article-meta
             small by #{article.author}, #{article.updated_at} &nbsp;
-              a(href='/'+article.slug) link to full article
+              a(href='/articles/'+article.slug) link to full article
 
           !{markdown(article.content, 200)}
 
