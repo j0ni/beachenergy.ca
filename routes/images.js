@@ -10,7 +10,7 @@ exports.index = function (req, res) {
   Image.find({visible: true})
     .limit(limit)
     .sort('-updated_at')
-    .select('title slug tags updated_at')
+    .select('title slug tags updated_at filename')
     .exec(function (error, images) {
       if (checkError(error, res))
         return;
@@ -62,7 +62,7 @@ exports.create = function (req, res) {
     if (checkError(error, res))
       return;
 
-    res.redirect('/images');
+    res.redirect('/');
   });
 };
 

@@ -1,21 +1,7 @@
-extends layout
-
-block content
-  .container
-    .hero-unit
-      h1 Beach Energy
-      p.lead Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-  .container
-    .row
-      .span3.sidebar
-        h2 Sidebar
-        p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      .span9.content
-        for article in articles
-          h2 #{article.title}
-          .article-meta
-            small by #{article.author}, #{article.updated_at} &nbsp;
-              a(href='/articles/'+article.slug) link to full article
-
-          !{markdown(article.content, 200)}
-
+for article in articles
+  h2 #{article.title}
+  .article-meta
+    small by #{article.author}, #{article.updated_at} &nbsp;
+      a(href='/articles/'+article.slug) link to full article
+ 
+  !{markdown(article.content, 200)}

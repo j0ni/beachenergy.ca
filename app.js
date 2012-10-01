@@ -52,6 +52,8 @@ app.all('*', function (req, res, next) {
 mongoose.connect(config.mongo.url);
 
 // Main routes
+app.get('/', routes.index);
+
 app.get('/articles', routes.articles.index);
 app.post('/articles', routes.articles.create);
 app.get('/articles/new', routes.articles.new);

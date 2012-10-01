@@ -3,7 +3,7 @@
 var Article = require('../datamodel/article')
   , _ = require('underscore')
   , util = require('util')
-  , md = require('github-flavored-markdown');
+  , markdown = require('../lib/markdown');
 
 exports.index = function (req, res) {
   Article.find({visible: true}, null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
@@ -100,16 +100,6 @@ function buildArticle(params, article) {
   };
 }
 
-function markdown(str, limit) {
-  if (limit && str.length > limit) {
-    while (limit < str.length && str[limit].match(/\w/))
-      limit++;
-
-    str = str.substr(0, limit) + '...';
-  }
-
-  return md.parse(str);
-}
 
 function sendForm(article, res) {
   res.render('articles/form', { article: article });
