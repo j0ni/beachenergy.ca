@@ -56,7 +56,8 @@ function saveUser(user, req, res) {
     if (checkSaveError(error, req, res))
       return;
 
-    req.flash('info', 'Success');
+    var message = user.admin ? 'Success' : 'Success. If you want to edit articles, contact an adminitrator.';
+    req.flash('success', message);
     res.redirect('/');
   });
 }
