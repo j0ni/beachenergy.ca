@@ -19,12 +19,10 @@ var express = require('express')
 var app = express();
 
 passport.serializeUser(function(user, done) {
-  console.log('serializing ' + user.email);
   done(null, user.email);
 });
 
 passport.deserializeUser(function(email, done) {
-  console.log('deserializing ' + email);
   User.findByEmail(email, function (error, user) {
     done(error, user);
   });
@@ -97,7 +95,6 @@ app.all('*', function (req, res, next) {
 
 // session
 app.all('*', function (req, res, next) {
-  console.log('req.user is ' + util.inspect(req.user));
   app.locals.user = req.user || new User();
   app.locals.messages = {
     error: req.flash('error'),

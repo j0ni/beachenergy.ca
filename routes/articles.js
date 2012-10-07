@@ -55,15 +55,21 @@ exports.edit = function (req, res) {
 }
 
 exports.create = function (req, res) {
+  if (checkAuth(req, res))
+    return;
+
   Article.create(buildArticle(req.body), function (error, article) {
     if (checkSaveError(error, res))
       return;
 
-    res.redirect('/articles');
+    res.redirect('/');
   });
 }
 
 exports.update = function (req, res) {
+  if (checkAuth(req, res))
+    return;
+
   Article.findOneAndUpdate({slug: req.params['article']}, buildArticle(req.body), function (error, article) {
     if (checkSaveError(error, res))
       return;
@@ -119,6 +125,14 @@ function checkError(error, res) {
   if (error) {
     console.error(error);
     res.send(500, {error: error});
+    return true;
+  }
+}
+
+function checkAuth(req, res) {
+  if (!(req.user && req.user.admin)) {
+    req.flash('error', 'Not authorized');
+    res.redirect('/');
     return true;
   }
 }

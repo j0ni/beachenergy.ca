@@ -10,7 +10,6 @@ exports.new = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  console.log('creating a user');
   var user = buildUser(req.body);
 
   user.changePassword(req.body['password'], req.body['confirm'], function (error, user) {
@@ -25,7 +24,6 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  console.log('updating a user with ' + util.inspect(req.body));
   User.findByEmail(req.user.email, function (error, user) {
     if (checkError(error, res))
       return;
@@ -64,7 +62,6 @@ function saveUser(user, req, res) {
 }
 
 exports.login = function (req, res) {
-  console.log(util.inspect(req));
   res.render('users/login');
 };
 

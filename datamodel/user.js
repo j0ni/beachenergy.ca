@@ -54,7 +54,6 @@ module.exports = (function () {
   };
 
   UserSchema.methods.changePassword = function (password, confirm, callback) {
-    console.log('password:' + password + ' confirm:' + confirm);
     if (password && confirm && password === confirm) {
       this.password = password;
       callback(undefined, this);
@@ -67,7 +66,7 @@ module.exports = (function () {
     this.findOne({email: email}, function (error, user) {
       if (error) return callback(error);
       if (!user) return callback();
-      
+
       user.originalPassword = user.password;
       callback(undefined, user);
     });

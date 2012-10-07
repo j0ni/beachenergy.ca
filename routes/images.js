@@ -1,5 +1,7 @@
 "use strict";
 
+/* global require, console, exports */
+
 var Image = require('../datamodel/image');
 var util = require('util');
 var fs = require('fs');
@@ -58,6 +60,9 @@ exports.edit = function (req, res) {
 };
 
 exports.create = function (req, res) {
+  if (checkAuth(req, res))
+    return;
+
   Image.create(buildImage(req), function (error, image) {
     if (checkError(error, res))
       return;
@@ -67,6 +72,9 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
+  if (checkAuth(req, res))
+    return;
+
   Image.findOne({slug: req.params['image']}, function (error, image) {
     if (checkError(error, res))
       return;
@@ -137,4 +145,12 @@ function checkSaveError(error, res) {
   }
 
   return checkError(error, res);
+}
+
+function checkAuth(req, res) {
+  if (!(req.user && req.user.admin)) {
+    req.flash('error', 'Not authorized');
+    res.redirect('/');
+    return true;
+  }
 }
