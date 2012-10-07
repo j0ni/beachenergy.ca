@@ -6,7 +6,7 @@ var User = require('../datamodel/user');
 var util = require('util');
 
 exports.new = function (req, res) {
-  sendForm(new User(), res);
+  res.render('users/form');
 };
 
 exports.create = function (req, res) {
@@ -69,10 +69,6 @@ exports.edit = function (req, res) {
   res.render('users/form');
 };
 
-
-function sendForm(user, res) {
-  res.render('users/form');
-}
 
 function checkError(error, res) {
   if (error) {
