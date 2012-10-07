@@ -4,6 +4,9 @@
 
 var User = require('../datamodel/user');
 var util = require('util');
+var shared = require('./shared');
+var checkError = shared.checkError;
+var checkSaveError = shared.checkSaveError;
 
 exports.new = function (req, res) {
   res.render('users/form');
@@ -70,24 +73,6 @@ exports.edit = function (req, res) {
   res.render('users/form');
 };
 
-
-function checkError(error, res) {
-  if (error) {
-    console.error(error);
-    res.send(500, {error: error});
-    return true;
-  }
-}
-
-function checkSaveError(error, req, res) {
-  if (error && error['name'] && error['name'] === 'ValidationError') {
-    req.flash('error', error);
-    res.redirect('/');
-    return true;
-  }
-
-  return checkError(error, res);
-}
 
 function buildUser(params, user) {
   user = user || new User();

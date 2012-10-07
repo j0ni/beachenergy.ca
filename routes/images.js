@@ -6,6 +6,10 @@ var Image = require('../datamodel/image');
 var util = require('util');
 var fs = require('fs');
 var _ = require('underscore');
+var shared = require('./shared');
+var checkError = shared.checkError;
+var checkSaveError = shared.checkSaveError;
+var checkAuth = shared.checkAuth;
 
 exports.index = function (req, res) {
   var limit = parseInt(req.query.limit) || 3;
@@ -128,29 +132,4 @@ function buildImage(req, image) {
 
 function sendForm(image, res) {
   res.render('images/form', { image: image });
-}
-
-function checkError(error, res) {
-  if (error) {
-    console.error(error);
-    res.send(500, { error: error });
-    return true;
-  }
-}
-
-function checkSaveError(error, res) {
-  if (error && error['name'] && error['name'] === 'ValidationError') {
-    res.send(400, { error: error });
-    return true;
-  }
-
-  return checkError(error, res);
-}
-
-function checkAuth(req, res) {
-  if (!(req.user && req.user.admin)) {
-    req.flash('error', 'Not authorized');
-    res.redirect('/');
-    return true;
-  }
 }

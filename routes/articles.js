@@ -5,7 +5,11 @@
 var Article = require('../datamodel/article')
   , _ = require('underscore')
   , util = require('util')
-  , markdown = require('../lib/markdown');
+  , markdown = require('../lib/markdown')
+  , shared = require('./shared')
+  , checkAuth = shared.checkAuth
+  , checkError = shared.checkError
+  , checSaveError = shared.checkSaveError;
 
 exports.index = function (req, res) {
   Article.find({visible: true}, null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
@@ -110,29 +114,4 @@ function buildArticle(params, article) {
 
 function sendForm(article, res) {
   res.render('articles/form', { article: article });
-}
-
-function checkSaveError(error, res) {
-  if (error && error['name'] && error['name'] === 'ValidationError') {
-    res.send(400, { error: error });
-    return true;
-  }
-
-  return checkError(error, res);
-}
-
-function checkError(error, res) {
-  if (error) {
-    console.error(error);
-    res.send(500, {error: error});
-    return true;
-  }
-}
-
-function checkAuth(req, res) {
-  if (!(req.user && req.user.admin)) {
-    req.flash('error', 'Not authorized');
-    res.redirect('/');
-    return true;
-  }
 }
