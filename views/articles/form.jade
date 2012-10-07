@@ -12,7 +12,7 @@ form(method='POST', class='form-horizontal')
   .control-group
     label.control-label Author
     .controls
-      input(type='text', name='author', value=article.author)
+      input(type='text', name='author', value=article.author||user.firstname+' '+user.lastname)
 
   .control-group
     label.control-label Content
