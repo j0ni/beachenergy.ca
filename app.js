@@ -14,7 +14,8 @@ var express = require('express')
   , LocalStrategy = require('passport-local').Strategy
   , User = require('./datamodel/user')
   , flash = require('connect-flash')
-  , util = require('util');
+  , util = require('util')
+  , MongoStore = require('connect-mongo')(express);
 
 var app = express();
 
@@ -68,7 +69,12 @@ app.configure(function () {
   }));
   app.use(express.limit('5mb'));
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'smug hippies' }));
+  app.use(express.session({
+    secret: 'smug hippies',
+    store: new MongoStore({
+      url: config.mongo.url
+    })
+  }));
   app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session());

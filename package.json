@@ -23,7 +23,8 @@
     "passport": "*",
     "passport-local": "*",
     "bcrypt": "*",
-    "connect-flash": "*"
+    "connect-flash": "*",
+    "connect-mongo": "*"
   },
   "devDependencies": {
     "mocha": "~1.4.2"
