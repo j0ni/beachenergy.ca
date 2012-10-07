@@ -1,5 +1,7 @@
 "use strict";
 
+/* global module, require */
+
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 

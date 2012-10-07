@@ -2,11 +2,6 @@ $(function () {
   var $modal = $('#modal');
   var $original = $modal.html();
 
-  $('.sign-in').live('click', function (event) {
-    event.preventDefault();
-    alert('sign in not implemented yet');
-  });
-
   function loadForm(url, header, action) {
     $.ajax({
       url: url,
@@ -30,9 +25,25 @@ $(function () {
         $form.find('input[name="slug"]').attr('value', event.target.value.toLowerCase().replace(/ +/g, '-'));
       });
 
+      var $actions = $form.find('.form-actions');
+      if ($actions) {
+        $modal.find('.modal-footer').html($actions.html());
+        $actions.remove();
+      }
+
       $modal.modal('show');
     });
   }
+
+  $('.login').live('click', function (event) {
+    event.preventDefault();
+    loadForm('/users/login', 'Enter email address and password', '/users/login');
+  });
+
+  $('.sign-up').live('click', function (event) {
+    event.preventDefault();
+    loadForm('/users/new', 'Create an account', '/users');
+  });
 
   $('.edit-article').live('click', function (event) {
     event.preventDefault();

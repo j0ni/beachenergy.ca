@@ -1,5 +1,7 @@
 "use strict";
 
+/* global require, exports, console */
+
 var Article = require('../datamodel/article')
   , _ = require('underscore')
   , util = require('util')
@@ -62,7 +64,6 @@ exports.create = function (req, res) {
 }
 
 exports.update = function (req, res) {
-  console.log(util.inspect(req.params));
   Article.findOneAndUpdate({slug: req.params['article']}, buildArticle(req.body), function (error, article) {
     if (checkSaveError(error, res))
       return;

@@ -15,9 +15,18 @@ html
   body
     include nav
 
-    .row
-      .span12
-        .flash-message
+    .container
+      .row
+        .span12
+          .flash-message
+            if messages.error != ''
+              .alert.error #{messages.error}
+            if messages.info != ''
+              .alert.info #{messages.info}
+            if messages.warning != ''
+              .alert.warning #{messages.warning}
+            if messages.success != ''
+              .alert.success #{messages.success}
 
     block content
 

@@ -1,9 +1,14 @@
+"use strict";
+
+/* global require, exports */
+
 var Article = require('../datamodel/article');
 var Image = require('../datamodel/image');
 var markdown = require('../lib/markdown');
 
 exports.articles = require('./articles');
 exports.images = require('./images');
+exports.users = require('./users');
 
 exports.index = function (req, res) {
   Article.find({visible: true})

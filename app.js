@@ -1,4 +1,4 @@
-
+/* global require, process, console */
 /**
  * Module dependencies.
  */
@@ -9,9 +9,49 @@ var express = require('express')
   , path = require('path')
   , auth = require('http-auth')
   , mongoose = require('mongoose')
-  , config = require('./config');
+  , config = require('./config')
+  , passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy
+  , User = require('./datamodel/user')
+  , flash = require('connect-flash')
+  , util = require('util');
 
 var app = express();
+
+passport.serializeUser(function(user, done) {
+  console.log('serializing ' + user.email);
+  done(null, user.email);
+});
+
+passport.deserializeUser(function(email, done) {
+  console.log('deserializing ' + email);
+  User.findByEmail(email, function (error, user) {
+    done(error, user);
+  });
+});
+
+passport.use(new LocalStrategy(
+  function(email, password, done) {
+    process.nextTick(function () {
+      User.findByEmail(email, function(error, user) {
+        if (error)
+          return done(error);
+
+        if (!user) {
+          return done(null, false, { message: 'Unknown user ' + email });
+        }
+
+        user.comparePassword(password, function (error, match) {
+          if (match) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: 'Username and password did not match' });
+          }
+        });
+      });
+    });
+  }
+));
 
 app.configure('development', function () {
   app.use(express.logger({ format: ':method :url :status :remote-addr :response-time'}));
@@ -23,12 +63,17 @@ app.configure(function () {
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
+  app.use(express.cookieParser());
   app.use(express.bodyParser({
     uploadDir: __dirname + '/public/uploads',
     keepExtensions: true
   }));
   app.use(express.limit('5mb'));
   app.use(express.methodOverride());
+  app.use(express.session({ secret: 'smug hippies' }));
+  app.use(flash());
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(app.router);
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -45,14 +90,42 @@ var basic = auth({
   authList: ['beaches:beaches']
 });
 
+// filters
 app.all('*', function (req, res, next) {
   basic.apply(req, res, function () { next(); });
 });
 
-mongoose.connect(config.mongo.url);
+// session
+app.all('*', function (req, res, next) {
+  console.log('req.user is ' + util.inspect(req.user));
+  app.locals.user = req.user || new User();
+  app.locals.messages = {
+    error: req.flash('error'),
+    info: req.flash('info'),
+    success: req.flash('success'),
+    warning: req.flash('warning')
+  };
+  next();
+});
+
 
 // Main routes
 app.get('/', routes.index);
+
+app.get('/users/login', routes.users.login);
+app.post('/users/login', passport.authenticate('local', {
+  failureRedirect: '/',
+  successRedirect: '/',
+  failureFlash: true
+}));
+app.get('/users/logout', function (req, res) {
+  req.logout();
+  res.redirect('/');
+});
+app.get('/users/edit', routes.users.edit);
+app.get('/users/new', routes.users.new);
+app.post('/users', routes.users.create);
+app.post('/users/:email', routes.users.update);
 
 app.get('/articles', routes.articles.index);
 app.post('/articles', routes.articles.create);
@@ -68,6 +141,8 @@ app.get('/images/:image', routes.images.show);
 app.post('/images/:image', routes.images.update);
 app.get('/images/:image/edit', routes.images.edit);
 
+
+mongoose.connect(config.mongo.url);
 
 http.createServer(app).listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
