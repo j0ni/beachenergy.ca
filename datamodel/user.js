@@ -13,6 +13,7 @@ module.exports = (function () {
     lastname: {type: String, required: false, trim: true},
     email: {type: String, required: true, index: { unique: true }},
     password: {type: String, required: true},
+    admin: {type: Boolean, default: false},
     created_at: {type: Date},
     updated_at: {type: Date, index: 1}
   });
@@ -31,6 +32,7 @@ module.exports = (function () {
     var user = this;
 
     if (!user.isModified()) return next();
+    if (user.originalPassword === user.password) return next();
 
     bcrypt.genSalt(SALT_WORK_FACTOR, function (error, salt) {
       if (error) return next(error);
@@ -62,7 +64,13 @@ module.exports = (function () {
   }
 
   UserSchema.statics.findByEmail = function (email, callback) {
-    this.findOne({email: email}, callback);
+    this.findOne({email: email}, function (error, user) {
+      if (error) return callback(error);
+      if (!user) return callback();
+      
+      user.originalPassword = user.password;
+      callback(undefined, user);
+    });
   };
 
   return mongoose.model('User', UserSchema);

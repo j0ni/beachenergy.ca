@@ -3,10 +3,14 @@
     a(class='brand', href='/')= 'Beach Energy'
     ul.nav.pull-right
       if user.email
+        if user.admin
+          li
+            a(class='new-article', href='/articles/new')= 'New Article'
+          li
+            a(class='new-image', href='/image/new')= 'New Image'
+
         li
-          a(class='new-article', href='/articles/new')= 'New Article'
-        li
-          a(class='new-image', href='/image/new')= 'New Image'
+          a(class='edit-user', href='/users/edit')= 'Edit Profile'
         li
           a(class='logout', href='/users/logout')= 'Sign Out'
       else

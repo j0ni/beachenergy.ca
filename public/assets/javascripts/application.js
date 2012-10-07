@@ -11,10 +11,18 @@ $(function () {
       $modal.find('.modal-body').html(html);
 
       var $form = $modal.find('form');
-      if (header.match(/^Edit/))
-        action = action + '/' + $form.find('input[name="slug"]').attr('value');
+      if (header.match(/^Edit/)) {
+        var slug = $form.find('input[name="slug"]');
+        var email = $form.find('input[name="email"]');
 
-      $form.attr('action', action);
+        if (slug.length)
+          action = action + '/' + slug.attr('value');
+        else if (email.length)
+          action = action + '/' + email.attr('value');
+      }
+
+      if (action)
+        $form.attr('action', action);
 
       $('.btn-primary').live('click', function (event) {
         event.preventDefault();
@@ -31,6 +39,13 @@ $(function () {
         $actions.remove();
       }
 
+      $modal.find('input').live('keydown', function (event) {
+        if (event.which === 13) {
+          $(this).blur();
+          $modal.find('.btn-primary').focus().click();
+        }
+      });
+
       $modal.modal('show');
     });
   }
@@ -38,7 +53,9 @@ $(function () {
   $('.login').live('click', function (event) {
     event.preventDefault();
     loadForm('/users/login', 'Enter email address and password', '/users/login');
+
   });
+
 
   $('.sign-up').live('click', function (event) {
     event.preventDefault();
@@ -65,6 +82,11 @@ $(function () {
     loadForm(event.target.href, 'Edit Image', '/images');
   });
 
+  $('.edit-user').live('click', function (event) {
+    event.preventDefault();
+    loadForm(event.target.href, 'Edit account details', '/users');
+  });
+
   $('.thumbnail').live('click', function (event) {
     event.preventDefault();
     $img = $(event.target);
@@ -82,6 +104,6 @@ $(function () {
   $('.modal .btn').live('click', function (event) {
     setTimeout(function () {
       $modal.html($original);
-    }, 700);
+    }, 1000);
   });
 });
