@@ -14,7 +14,6 @@ module.exports = (function () {
     email: {type: String, required: true, index: { unique: true }},
     password: {type: String, required: true},
     role: {type: String, default: 'consumer', trim: true},
-    admin: {type: Boolean, default: false},
     created_at: {type: Date},
     updated_at: {type: Date, index: 1}
   });
