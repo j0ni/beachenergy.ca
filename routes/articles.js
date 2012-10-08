@@ -9,7 +9,7 @@ var Article = require('../datamodel/article')
   , shared = require('./shared')
   , checkAuth = shared.checkAuth
   , checkError = shared.checkError
-  , checSaveError = shared.checkSaveError;
+  , checkSaveError = shared.checkSaveError;
 
 exports.index = function (req, res) {
   Article.find({visible: true}, null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
