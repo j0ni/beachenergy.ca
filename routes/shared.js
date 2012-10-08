@@ -2,12 +2,13 @@
 
 /* global require, console, exports */
 
-exports.checkAuth = function (req, res, role) {
+exports.checkAuth = function (req, res, role, redirect) {
   role = role || 'admin';
+  redirect = redirect || '/';
 
-  if (!(req.user && req.user.role === role)) {
+  if (!req.user.canActAs(role)) {
     req.flash('error', 'Not authorized');
-    res.redirect('/');
+    res.redirect(redirect);
     return true;
   }
 };

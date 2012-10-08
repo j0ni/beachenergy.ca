@@ -9,6 +9,7 @@ var markdown = require('../lib/markdown');
 exports.articles = require('./articles');
 exports.images = require('./images');
 exports.users = require('./users');
+exports.admin = require('./admin');
 
 exports.index = function (req, res) {
   Article.find({visible: true})

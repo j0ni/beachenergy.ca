@@ -50,12 +50,40 @@ $(function () {
     });
   }
 
+  $('.select-role').live('change', function (event) {
+    var email = $(event.target).attr('name');
+    var roles = event.target.options;
+    var selection = event.target.options.selectedIndex;
+    var role = $(roles[selection]).attr('value');
+
+    $.ajax({
+      type: 'POST',
+      url: '/admin/users/'+email,
+      data: 'role='+role
+    }).success(function (data) {
+      $.scrollTo($('.flash-message').html('<div class="alert alert-success">' + data + '</div>'));
+    }).error(function (data) {
+      $.scrollTo($('.flash-message').html('<div class="alert alert-error">' + data + '</div>'));
+    });
+  });
+
+  $('.delete-user').live('click', function (event) {
+    event.preventDefault();
+
+    $.ajax({
+      type: 'POST',
+      url: $(event.target).attr('href')
+    }).success(function (data) {
+      $.scrollTo($('.flash-message').html('<div class="alert alert-success">' + data + '</div>'));
+      $(event.target).parents('tr').remove();
+    });
+  });
+
   $('.login').live('click', function (event) {
     event.preventDefault();
     loadForm('/users/login', 'Enter email address and password', '/users/login');
 
   });
-
 
   $('.sign-up').live('click', function (event) {
     event.preventDefault();

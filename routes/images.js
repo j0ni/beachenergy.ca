@@ -64,7 +64,7 @@ exports.edit = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  if (checkAuth(req, res))
+  if (checkAuth(req, res, 'writer'))
     return;
 
   Image.create(buildImage(req), function (error, image) {
@@ -76,7 +76,7 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  if (checkAuth(req, res))
+  if (checkAuth(req, res, 'writer'))
     return;
 
   Image.findOne({slug: req.params['image']}, function (error, image) {

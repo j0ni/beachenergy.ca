@@ -59,7 +59,7 @@ exports.edit = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  if (checkAuth(req, res))
+  if (checkAuth(req, res, 'writer'))
     return;
 
   Article.create(buildArticle(req.body), function (error, article) {
@@ -71,7 +71,7 @@ exports.create = function (req, res) {
 }
 
 exports.update = function (req, res) {
-  if (checkAuth(req, res))
+  if (checkAuth(req, res, 'writer', req.path))
     return;
 
   Article.findOneAndUpdate({slug: req.params['article']}, buildArticle(req.body), function (error, article) {

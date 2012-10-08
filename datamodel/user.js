@@ -13,6 +13,7 @@ module.exports = (function () {
     lastname: {type: String, required: false, trim: true},
     email: {type: String, required: true, index: { unique: true }},
     password: {type: String, required: true},
+    role: {type: String, default: 'consumer', trim: true},
     admin: {type: Boolean, default: false},
     created_at: {type: Date},
     updated_at: {type: Date, index: 1}
@@ -54,12 +55,24 @@ module.exports = (function () {
   };
 
   UserSchema.methods.changePassword = function (password, confirm, callback) {
-    if (password && confirm && password === confirm) {
-      this.password = password;
-      callback(undefined, this);
+    if (password && confirm) {
+      if (password === confirm) {
+        this.password = password;
+        callback(undefined, this);
+      } else {
+        callback('Passwords did not match');
+      }
     } else {
-      callback('Passwords did not match');
+      callback('Password cannot be empty');
     }
+  }
+
+  var Roles = UserSchema.statics.Roles = ['admin', 'writer', 'consumer'];
+
+  UserSchema.methods.canActAs = function (role) {
+    var required = Roles.indexOf(role);
+    var actual = Roles.indexOf(this.role);
+    if (actual <= required) return true;
   }
 
   UserSchema.statics.findByEmail = function (email, callback) {
@@ -71,6 +84,7 @@ module.exports = (function () {
       callback(undefined, user);
     });
   };
+
 
   return mongoose.model('User', UserSchema);
 }());

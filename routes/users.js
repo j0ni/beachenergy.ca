@@ -9,7 +9,7 @@ var checkError = shared.checkError;
 var checkSaveError = shared.checkSaveError;
 
 exports.new = function (req, res) {
-  res.render('users/form');
+  res.render('users/form', { user: new User() });
 };
 
 exports.create = function (req, res) {
@@ -59,7 +59,7 @@ function saveUser(user, req, res) {
     if (checkSaveError(error, req, res))
       return;
 
-    var message = user.admin ? 'Success' : 'Success. If you want to edit articles, contact an adminitrator.';
+    var message = user.canActAs('writer') ? 'Success' : 'Success. If you want to write articles, contact an adminitrator.';
     req.flash('success', message);
     res.redirect('/');
   });
@@ -70,7 +70,7 @@ exports.login = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  res.render('users/form');
+  res.render('users/form', { user: req.user });
 };
 
 

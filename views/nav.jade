@@ -2,8 +2,11 @@
   .navbar-inner
     a(class='brand', href='/')= 'Beach Energy'
     ul.nav.pull-right
-      if user.email
-        if user.admin
+      if currentUser.email
+        if currentUser.canActAs('admin')
+          li
+            a(class='user-admin', href='/admin/users')= 'User Admin'
+        if currentUser.canActAs('writer')
           li
             a(class='new-article', href='/articles/new')= 'New Article'
           li

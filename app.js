@@ -101,7 +101,7 @@ app.all('*', function (req, res, next) {
 
 // session
 app.all('*', function (req, res, next) {
-  app.locals.user = req.user || new User();
+  app.locals.currentUser = req.user || new User();
   app.locals.messages = {
     error: req.flash('error'),
     info: req.flash('info'),
@@ -114,6 +114,10 @@ app.all('*', function (req, res, next) {
 
 // Main routes
 app.get('/', routes.index);
+
+app.get('/admin/users', routes.admin.users);
+app.post('/admin/users/:email', routes.admin.setRole);
+app.post('/admin/users/:email/delete', routes.admin.deleteUser);
 
 app.get('/users/login', routes.users.login);
 app.post('/users/login', passport.authenticate('local', {

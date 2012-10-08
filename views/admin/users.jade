@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  .container
+    h1 User Management
+    form(method='POST')
+      table.table.table-hover
+        thead
+          tr
+            th User
+            th Role
+        tbody
+          each user in users
+            tr
+              td #{user.email}
+              td
+                select(name=user.email, class='select-role')
+                  each r in roles
+                    option(selected=(user.role === r), value=r)= r
+              td
+                a(class='btn btn-danger delete-user pull-right', href='/admin/users/'+user.email+'/delete') Delete
+              
+      
