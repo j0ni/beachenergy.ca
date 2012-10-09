@@ -31,7 +31,7 @@ exports.users = {
     if (checkAuth(req, res, 'admin', '/admin/users'))
       return;
 
-    User.findOne({email:req.params['email']}, function (error, user) {
+    User.findByEmail(req.params['email'], function (error, user) {
       if (checkError(error, res))
         return;
 
