@@ -28,5 +28,7 @@ module.exports = (function () {
     next();
   });
 
+  ImageSchema.plugin(require('./sluggenerator')());
+
   return mongoose.model('Image', ImageSchema);
 }());

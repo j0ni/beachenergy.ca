@@ -9,10 +9,11 @@ var Article = require('../datamodel/article')
   , shared = require('./shared')
   , checkAuth = shared.checkAuth
   , checkError = shared.checkError
-  , checkSaveError = shared.checkSaveError;
+  , checkSaveError = shared.checkSaveError
+  , getQuery = shared.getQuery;
 
 exports.index = function (req, res) {
-  Article.find({visible: true}, null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
+  Article.find(getQuery(req), null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
     if (checkError(error, res))
       return;
 
@@ -22,12 +23,17 @@ exports.index = function (req, res) {
 };
 
 exports.show = function (req, res) {
-  Article.findOne({visible: true, slug: req.params['article']}, function (error, article) {
+  var query = getQuery(req);
+  query.slug = req.params['article'];
+  console.log(util.inspect(query));
+
+  Article.findOne(query, function (error, article) {
     if (checkError(error, res))
       return;
 
     if (!article) {
-      res.send(404, {error: 'not found'});
+      req.flash('error', 'Article not found');
+      res.redirect('/');
       return;
     }
 
@@ -36,21 +42,23 @@ exports.show = function (req, res) {
 };
 
 exports.new = function (req, res) {
+  if (checkAuth(req, res, 'writer'))
+    return;
+
   sendForm(new Article(), res);
 };
 
 exports.edit = function (req, res) {
-  if (req.params['article'] === undefined) {
-    res.send(400, {error: 'no article provided'});
+  if (checkAuth(req, res, 'writer'))
     return;
-  }
 
   Article.findOne({slug: req.params['article']}, function (error, article) {
     if (checkError(error, res))
       return;
 
     if (!article) {
-      res.send(404, {error: 'not found'});
+      req.flash('error', 'Article not found');
+      req.redirect('/');
       return;
     }
 
@@ -62,10 +70,11 @@ exports.create = function (req, res) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  Article.create(buildArticle(req.body), function (error, article) {
-    if (checkSaveError(error, res))
+  buildArticle(req.body).save(function (error, article) {
+    if (checkSaveError(error, req, res))
       return;
 
+    req.flash('success', 'Article successfully created');
     res.redirect('/');
   });
 }
@@ -74,16 +83,26 @@ exports.update = function (req, res) {
   if (checkAuth(req, res, 'writer', req.path))
     return;
 
-  Article.findOneAndUpdate({slug: req.params['article']}, buildArticle(req.body), function (error, article) {
-    if (checkSaveError(error, res))
+  Article.findOne({slug: req.params['article']}, function (error, article) {
+    if (checkError(error, res))
       return;
 
     if (!article) {
-      res.send(404, {error: 'not found'});
+      req.flash('error', 'Article not found');
+      res.redirect('/');
       return;
     }
 
-    res.redirect('/articles/' + article.slug);
+    article = buildArticle(req.body, article);
+
+    article.save(function (error, article) {
+      if (checkSaveError(error, req, res))
+        return;
+
+      req.flash('success', 'Article successfully updated');
+      res.redirect('/articles/' + article.slug);
+      return;
+    });
   });
 }
 
@@ -98,19 +117,15 @@ function buildArticle(params, article) {
       return tags;
   }
 
-  var slug = params['slug'] || '';
   var tags = getTags();
 
-  return {
-    title: params['title'] || article.title,
-    slug: slug.toLowerCase().replace(/ +/g, '-') || article.slug,
-    author: params['author'] || article.author,
-    content: params['content'] || article.content,
-    visible: params['visible'] || article.visible,
-    tags: tags || article.tags
-  };
-}
+  article.title = params['title'] || article.title;
+  article.author = params['author'] || article.author;
+  article.content = params['content'] || article.content;
+  article.tags = tags || article.tags
 
+  return article;
+}
 
 function sendForm(article, res) {
   res.render('articles/form', { article: article });

@@ -34,6 +34,13 @@ exports.checkSaveError = function (error, req, res, redirect) {
   return checkError(error, res);
 };
 
+exports.getQuery = function (req) {
+  if (req.user && req.user.canActAs('writer'))
+    return {};
+  else
+    return { visible: true };
+}
+
 function formatValidationErrors(error) {
   var result = '<p>Validation failed.</p><ul>';
   for (var key in error.errors) {

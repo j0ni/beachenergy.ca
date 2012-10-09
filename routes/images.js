@@ -9,11 +9,12 @@ var _ = require('underscore');
 var shared = require('./shared');
 var checkError = shared.checkError;
 var checkSaveError = shared.checkSaveError;
-var checkAuth = shared.checkAuth;
+var checkAuth = shared.checkAuth
+var getQuery = shared.getQuery;
 
 exports.index = function (req, res) {
-  var limit = parseInt(req.query.limit) || 3;
-  Image.find({visible: true})
+  var limit = parseInt(req.query.limit) || 5;
+  Image.find(getQuery(req))
     .limit(limit)
     .sort('-updated_at')
     .select('title slug tags updated_at filename')
@@ -27,7 +28,10 @@ exports.index = function (req, res) {
 };
 
 exports.show = function (req, res) {
-  Image.findOne({visible: true, slug: req.params['image']}, function (error, image) {
+  var query = getQuery(req);
+  query.slug = req.params['image'];
+
+  Image.findOne(query, function (error, image) {
     if (checkError(error, res))
       return;
 
@@ -41,21 +45,23 @@ exports.show = function (req, res) {
 };
 
 exports.new = function (req, res) {
+  if (checkAuth(req, res, 'writer'))
+    return;
+
   sendForm(new Image(), res);
 };
 
 exports.edit = function (req, res) {
-  if (req.params['image'] === undefined) {
-    res.send(400, { error: 'no image slug provided' });
+  if (checkAuth(req, res, 'writer'))
     return;
-  }
 
   Image.findOne({slug: req.params['image']}, function (error, image) {
     if (checkError(error, res))
       return;
 
     if (!image) {
-      res.send(404, { error: 'not found' });
+      req.flash('error', 'Image not found');
+      req.redirect('/');
       return;
     }
 
@@ -67,16 +73,17 @@ exports.create = function (req, res) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  Image.create(buildImage(req), function (error, image) {
-    if (checkError(error, res))
+  buildImage(req).save(function (error, image) {
+    if (checkSaveError(error, req, res))
       return;
 
+    req.flash('success', 'Image succesffully uploaded');
     res.redirect('/');
   });
 };
 
 exports.update = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
+  if (checkAuth(req, res, 'writer', req.path))
     return;
 
   Image.findOne({slug: req.params['image']}, function (error, image) {
@@ -84,23 +91,27 @@ exports.update = function (req, res) {
       return;
 
     if (!image) {
-      res.send(404, { error: 'not found' });
+      req.flash('error', 'Image not found');
+      res.redirect('/');
       return;
     }
 
     var oldFilename = image.filename;
 
     image = buildImage(req, image);
-    image.save(function (error) {
-      if (checkSaveError(error, res))
+
+    image.save(function (error, image) {
+      if (checkSaveError(error, req, res))
         return;
 
-      fs.unlink('../public/uploads/' + oldFilename, function (error) {
+      fs.unlink('./public/uploads' + oldFilename, function (error) {
         if (error) {
           console.error('error deleting old image file: ' + oldFilename);
         }
 
+        req.flash('success', 'Image successfully updated');
         res.redirect('/images/' + image.slug);
+        return;
       });
     });
   });
@@ -117,17 +128,14 @@ function buildImage(req, image) {
       return tags;
   }
 
-  var slug = req.body['slug'] || '';
   var tags = getTags();
 
-  return {
-    title: req.body['title'] || image.title,
-    slug: slug.toLowerCase().replace(/ +/g, '-') || image.slug,
-    tags: tags || image.tags,
-    type: req.files.image.type || image.type,
-    filename: req.files.image.path.substring(req.files.image.path.lastIndexOf('/')) || image.filename,
-    visible: req.body['visible'] || image.visible
-  };
+  image.title = req.body['title'] || image.title;
+  image.tags = tags || image.tags;
+  image.type = req.files.image.type || image.type;
+  image.filename = req.files.image.path.substring(req.files.image.path.lastIndexOf('/')) || image.filename;
+
+  return image;
 }
 
 function sendForm(image, res) {

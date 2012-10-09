@@ -1,18 +1,10 @@
 form(method='POST', class='form-horizontal', enctype='multipart/form-data')
+  input(type='hidden', name='slug', value=image.slug)
+
   .control-group
     label.control-label Title
     .controls
       input(type='text', name='title', value=image.title)
-
-  .control-group
-    label.control-label Slug
-    .controls
-      input(type='text', name='slug', value=image.slug)
-
-  .control-group
-    label.control-label Visible
-    .controls
-      input(type='checkbox', name='visible', value=image.visible)
 
   .control-group
     label.control-label File

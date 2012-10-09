@@ -3,19 +3,32 @@
     a(class='brand', href='/')= 'Beach Energy'
     ul.nav.pull-right
       if currentUser.email
-        if currentUser.canActAs('admin')
-          li
-            a(class='user-admin', href='/admin/users')= 'User Admin'
         if currentUser.canActAs('writer')
           li
             a(class='new-article', href='/articles/new')= 'New Article'
           li
             a(class='new-image', href='/image/new')= 'New Image'
 
-        li
-          a(class='edit-user', href='/users/edit')= 'Edit Profile'
-        li
-          a(class='logout', href='/users/logout')= 'Sign Out'
+        if currentUser.canActAs('admin')
+          li.dropdown
+            a(class='dropdown-toggle', href='#', data-toggle='dropdown') Admin
+              b.caret
+            ul.dropdown-menu
+              li
+                a(class='user-admin', href='/admin/users')= 'Manage Users'
+              li
+                a(class='article-admin', href='/admin/articles')= 'Manage Articles'
+              li
+                a(class='image-admin', href='/admin/images')= 'Manage Images'
+
+        li.dropdown
+          a(class='dropdown-toggle', href='#', data-toggle='dropdown') #{currentUser.email}
+            b.caret
+          ul.dropdown-menu
+            li
+              a(class='edit-user', href='/users/edit')= 'Edit Profile'
+            li
+              a(class='logout', href='/users/logout')= 'Sign Out'
       else
         li
           a(class='sign-up', href='/users/new')= 'Sign Up'

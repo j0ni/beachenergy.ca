@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .container
+    h1 Manage Images
+    form
+      table.table.table-hover
+        thead
+          th Title
+          th Image
+          th Visible
+        tbody
+          each image in images
+            tr
+              td #{image.title}
+              td
+                a(href='/images/'+image.slug, class='thumbnail pull-left')
+                  img(src='/uploads/'+image.filename, alt=image.title)
+              td
+                input(class='set-image-visible', type='checkbox', name=image.slug, checked=image.visible)
+              td
+                a(class='btn btn-danger delete-image pull-right', href='/admin/images/'+image.slug+'/delete') Delete

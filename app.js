@@ -115,9 +115,15 @@ app.all('*', function (req, res, next) {
 // Main routes
 app.get('/', routes.index);
 
-app.get('/admin/users', routes.admin.users);
-app.post('/admin/users/:email', routes.admin.setRole);
-app.post('/admin/users/:email/delete', routes.admin.deleteUser);
+app.get('/admin/users', routes.admin.users.index);
+app.post('/admin/users/:email', routes.admin.users.setRole);
+app.post('/admin/users/:email/delete', routes.admin.users.delete);
+app.get('/admin/articles', routes.admin.articles.index);
+app.post('/admin/articles/:slug', routes.admin.articles.setVisible);
+app.post('/admin/articles/:slug/delete', routes.admin.articles.delete);
+app.get('/admin/images', routes.admin.images.index);
+app.post('/admin/images/:slug', routes.admin.images.setVisible);
+app.post('/admin/images/:slug/delete', routes.admin.images.delete);
 
 app.get('/users/login', routes.users.login);
 app.post('/users/login', passport.authenticate('local', {

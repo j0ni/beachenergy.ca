@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  .container
+    h1 Manage Articles
+    form
+      table.table.table-hover
+        thead
+          th Title
+          th Author
+          th Text
+          th Visible
+        tbody
+          each article in articles
+            tr
+              td 
+                a(href='/articles/'+article.slug) #{article.title}
+              td #{article.author}
+              td !{markdown(article.content, 200)}
+              td
+                input(class='set-article-visible', type='checkbox', name=article.slug, checked=article.visible)
+              td
+                a(class='btn btn-danger delete-article pull-right', href='/admin/articles/'+article.slug+'/delete') Delete

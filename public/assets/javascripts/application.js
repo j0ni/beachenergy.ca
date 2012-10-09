@@ -2,6 +2,10 @@ $(function () {
   var $modal = $('#modal');
   var $original = $modal.html();
 
+  function flash(level, message) {
+    $.scrollTo($('.flash-message').html('<div class="alert alert-' + level + '">' + message + '</div>'));
+  }
+
   function loadForm(url, header, action) {
     $.ajax({
       url: url,
@@ -27,10 +31,6 @@ $(function () {
       $('.btn-primary').live('click', function (event) {
         event.preventDefault();
         $form.trigger('submit');
-      });
-
-      $form.find('input[name="title"]').live('focusout', function (event) {
-        $form.find('input[name="slug"]').attr('value', event.target.value.toLowerCase().replace(/ +/g, '-'));
       });
 
       var $actions = $form.find('.form-actions');
@@ -61,28 +61,52 @@ $(function () {
       url: '/admin/users/'+email,
       data: 'role='+role
     }).success(function (data) {
-      $.scrollTo($('.flash-message').html('<div class="alert alert-success">' + data + '</div>'));
+      flash('success', data);
     }).error(function (data) {
-      $.scrollTo($('.flash-message').html('<div class="alert alert-error">' + data + '</div>'));
+      flash('error', (data && data.responseText ? data.responseText : data));
     });
   });
 
-  $('.delete-user').live('click', function (event) {
+  $('.delete-image, .delete-user, .delete-article').live('click', function (event) {
     event.preventDefault();
 
     $.ajax({
       type: 'POST',
       url: $(event.target).attr('href')
     }).success(function (data) {
-      $.scrollTo($('.flash-message').html('<div class="alert alert-success">' + data + '</div>'));
+      flash('success', data);
       $(event.target).parents('tr').remove();
+    }).error(function (data) {
+      flash('error', (data && data.responseText ? data.responseText : data));
     });
+  });
+
+  function setVisible(event, objectType) {
+    var slug = $(event.target).attr('name');
+    var visible = $(event.target).attr('checked');
+
+    $.ajax({
+      type: 'POST',
+      url: '/admin/'+objectType+'/'+slug,
+      data: 'visible='+(visible?'true':'false')
+    }).success(function (data) {
+      flash('success', data);
+    }).error(function (data) {
+      flash('error', (data && data.responseText ? data.responseText : data));
+   });
+  }
+
+  $('.set-article-visible').live('change', function (event) {
+    setVisible(event, 'articles')
+  });
+
+  $('.set-image-visible').live('change', function (event) {
+    setVisible(event, 'images')
   });
 
   $('.login').live('click', function (event) {
     event.preventDefault();
     loadForm('/users/login', 'Enter email address and password', '/users/login');
-
   });
 
   $('.sign-up').live('click', function (event) {

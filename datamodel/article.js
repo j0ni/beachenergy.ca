@@ -31,5 +31,7 @@ module.exports = (function () {
     next();
   });
 
+  ArticleSchema.plugin(require('./sluggenerator')());
+
   return mongoose.model('Article', ArticleSchema);
 }());
