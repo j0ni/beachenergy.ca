@@ -10,7 +10,8 @@ var Article = require('../datamodel/article')
   , checkAuth = shared.checkAuth
   , checkError = shared.checkError
   , checkSaveError = shared.checkSaveError
-  , getQuery = shared.getQuery;
+  , getQuery = shared.getQuery
+  , gettags = shared.getTags;
 
 exports.index = function (req, res) {
   Article.find(getQuery(req), null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
@@ -109,20 +110,10 @@ exports.update = function (req, res) {
 function buildArticle(params, article) {
   article = article || new Article();
 
-  function getTags() {
-    var tags = params['tags'] || '';
-    tags = tags.split(/ +/);
-    tags = _.select(tags, function (tag) { return tag.length > 0; });
-    if (tags.length > 0)
-      return tags;
-  }
-
-  var tags = getTags();
-
   article.title = params['title'] || article.title;
   article.author = params['author'] || article.author;
   article.content = params['content'] || article.content;
-  article.tags = tags || article.tags
+  article.tags = getTags(params) || article.tags
 
   return article;
 }

@@ -9,8 +9,9 @@ var _ = require('underscore');
 var shared = require('./shared');
 var checkError = shared.checkError;
 var checkSaveError = shared.checkSaveError;
-var checkAuth = shared.checkAuth
+var checkAuth = shared.checkAuth;
 var getQuery = shared.getQuery;
+var getTags = shared.getTags;
 
 exports.index = function (req, res) {
   var limit = parseInt(req.query.limit) || 5;
@@ -61,7 +62,7 @@ exports.edit = function (req, res) {
 
     if (!image) {
       req.flash('error', 'Image not found');
-      req.redirect('/');
+      res.redirect('/');
       return;
     }
 
@@ -120,18 +121,8 @@ exports.update = function (req, res) {
 function buildImage(req, image) {
   image = image || new Image();
 
-  function getTags() {
-    var tags = req.body['tags'] || '';
-    tags = tags.split(/ +/);
-    tags = _.select(tags, function (tag) { return tag.length > 0; });
-    if (tags.length > 0)
-      return tags;
-  }
-
-  var tags = getTags();
-
   image.title = req.body['title'] || image.title;
-  image.tags = tags || image.tags;
+  image.tags = getTags(req.body) || image.tags;
   image.type = req.files.image.type || image.type;
   image.filename = req.files.image.path.substring(req.files.image.path.lastIndexOf('/')) || image.filename;
 

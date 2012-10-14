@@ -10,8 +10,10 @@ var User = require('../datamodel/user')
   , Article = require('../datamodel/article')
   , markdown = require('../lib/markdown')
   , Image = require('../datamodel/image')
+  , Link = require('../datamodel/link')
   , fs = require('fs')
-  , util = require('util');
+  , util = require('util')
+  , ObjectId = require('mongoose').Types.ObjectId;
 
 exports.users = {
   index: function (req, res) {
@@ -93,6 +95,58 @@ exports.articles = {
 
 
       res.send(200, 'Article deleted: "' + req.params['slug'] + '"');
+      return;
+    });
+  }
+};
+
+exports.links = {
+  index: function (req, res) {
+    if (checkAuth(req, res, 'admin', '/admin/links'))
+      return;
+
+    Link.find().sort('-updated_at').exec(function (error, links) {
+      if (checkError(error, res))
+        return;
+
+      res.render('admin/links', { links: links });
+      return;
+    });
+  },
+
+  setVisible: function (req, res) {
+    if (checkAuth(req, res, 'admin', 'admin/links'))
+      return;
+
+    Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
+      if (checkError(error, res))
+        return true;
+
+      if (!link) {
+        res.send(404, 'Link not found');
+        return;
+      }
+
+      link.visible = (req.body['visible'] === 'true');
+      link.save(function (error, object) {
+        if (checkSaveError(error, req, res, '/admin/links'))
+          return;
+
+        res.send(200, 'Link "' + link.url + '" is now ' + (link.visible ? 'visible to all' : 'invisible'));
+        return;
+      });
+    });
+  },
+
+  delete: function (req, res) {
+    if (checkAuth(req, res, 'admin', '/admin/links'))
+      return;
+
+    Link.remove({_id: ObjectId.fromString(req.params['id'])}, function (error) {
+      if (checkError(error, res))
+        return;
+
+      res.send(200, 'Link deleted');
       return;
     });
   }

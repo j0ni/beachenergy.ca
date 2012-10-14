@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .container
+    h1 Manage Links
+    form
+      table.table.table-hover
+        thead
+          tr
+            th Anchor Text
+            th URL
+            th Visible
+        tbody
+          each link in links
+            tr
+              td #{link.text}
+              td #{link.url}
+              td
+                input(class='set-link-visible', type='checkbox', name=link._id, checked=link.visible)
+              td
+                a(class='btn btn-danger delete-link pull-right', href='/admin/links/'+link._id+'/delete') Delete
+              

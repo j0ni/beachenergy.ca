@@ -10,6 +10,9 @@
             a(class='new-image', href='/image/new')= 'New Image'
 
         if currentUser.canActAs('admin')
+          li
+            a(class='new-link', href='/links/new')= 'New Link'
+
           li.dropdown
             a(class='dropdown-toggle', href='#', data-toggle='dropdown') Admin
               b.caret
@@ -20,6 +23,8 @@
                 a(class='article-admin', href='/admin/articles')= 'Manage Articles'
               li
                 a(class='image-admin', href='/admin/images')= 'Manage Images'
+              li
+                a(class='link-admin', href='/admin/links')= 'Manage Links'
 
         li.dropdown
           a(class='dropdown-toggle', href='#', data-toggle='dropdown') #{currentUser.email}

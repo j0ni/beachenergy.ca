@@ -1,5 +1,7 @@
 "use strict";
 
+var _ = require('underscore');
+
 /* global require, console, exports */
 
 exports.checkAuth = function (req, res, role, redirect) {
@@ -39,6 +41,14 @@ exports.getQuery = function (req) {
     return {};
   else
     return { visible: true };
+}
+
+exports.getTags = function (params) {
+  var tags = params['tags'] || '';
+  tags = tags.split(/ +/);
+  tags = _.select(tags, function (tag) { return tag.length > 0; });
+  if (tags.length > 0)
+    return tags;
 }
 
 function formatValidationErrors(error) {

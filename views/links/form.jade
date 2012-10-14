@@ -1,0 +1,12 @@
+form(method='POST', class='form-horizontal')
+  input(type='hidden', name='id', value=link._id)
+
+  .control-group
+    label.control-label URL
+    .controls
+      input(type='url', name='url', value=link.url)
+
+  .control-group
+    label.control-label Anchor text
+    .controls
+      input(type='text', name='text', value=link.text)

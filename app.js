@@ -124,6 +124,9 @@ app.post('/admin/articles/:slug/delete', routes.admin.articles.delete);
 app.get('/admin/images', routes.admin.images.index);
 app.post('/admin/images/:slug', routes.admin.images.setVisible);
 app.post('/admin/images/:slug/delete', routes.admin.images.delete);
+app.get('/admin/links', routes.admin.links.index);
+app.post('/admin/links/:id', routes.admin.links.setVisible);
+app.post('/admin/links/:id/delete', routes.admin.links.delete);
 
 app.get('/users/login', routes.users.login);
 app.post('/users/login', passport.authenticate('local', {
@@ -153,6 +156,12 @@ app.get('/images/new', routes.images.new);
 app.get('/images/:image', routes.images.show);
 app.post('/images/:image', routes.images.update);
 app.get('/images/:image/edit', routes.images.edit);
+
+app.get('/links', routes.links.index);
+app.get('/links/new', routes.links.new);
+app.post('/links', routes.links.create);
+app.get('/links/:id/edit', routes.links.edit);
+app.post('/links/:id', routes.links.update);
 
 
 mongoose.connect(config.mongo.url);

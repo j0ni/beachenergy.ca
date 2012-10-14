@@ -18,11 +18,14 @@ $(function () {
       if (header.match(/^Edit/)) {
         var slug = $form.find('input[name="slug"]');
         var email = $form.find('input[name="email"]');
+        var id = $form.find('input[name="id"]');
 
         if (slug.length)
           action = action + '/' + slug.attr('value');
         else if (email.length)
           action = action + '/' + email.attr('value');
+        else if (id.length)
+          action = action + '/' + id.attr('value');
       }
 
       if (action)
@@ -67,7 +70,7 @@ $(function () {
     });
   });
 
-  $('.delete-image, .delete-user, .delete-article').live('click', function (event) {
+  $('.delete-link, .delete-image, .delete-user, .delete-article').live('click', function (event) {
     event.preventDefault();
 
     $.ajax({
@@ -104,6 +107,10 @@ $(function () {
     setVisible(event, 'images')
   });
 
+  $('.set-link-visible').live('change', function (event) {
+    setVisible(event, 'links')
+  });
+
   $('.login').live('click', function (event) {
     event.preventDefault();
     loadForm('/users/login', 'Enter email address and password', '/users/login');
@@ -114,14 +121,14 @@ $(function () {
     loadForm('/users/new', 'Create an account', '/users');
   });
 
-  $('.edit-article').live('click', function (event) {
-    event.preventDefault();
-    loadForm(event.target.href, 'Edit Article', '/articles');
-  });
-
   $('.new-article').live('click', function (event) {
     event.preventDefault();
     loadForm('/articles/new', 'New Article', '/articles');
+  });
+
+  $('.edit-article').live('click', function (event) {
+    event.preventDefault();
+    loadForm(event.target.href, 'Edit Article', '/articles');
   });
 
   $('.new-image').live('click', function (event) {
@@ -132,6 +139,16 @@ $(function () {
   $('.edit-image').live('click', function (event) {
     event.preventDefault();
     loadForm(event.target.href, 'Edit Image', '/images');
+  });
+
+  $('.new-link').live('click', function (event) {
+    event.preventDefault();
+    loadForm('/links/new', 'New Link', '/links');
+  });
+
+  $('.edit-link').live('click', function (event) {
+    event.preventDefault();
+    loadForm(event.target.href, 'Edit Link', '/links');
   });
 
   $('.edit-user').live('click', function (event) {
