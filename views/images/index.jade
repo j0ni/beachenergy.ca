@@ -1,5 +1,5 @@
 ul(class='thumbnails')
   for image in images
-    li
+    li.span3
       a(href='/images/'+image.slug, class='thumbnail')
         img(src='/uploads/'+image.filename, alt=image.title)
