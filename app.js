@@ -52,8 +52,13 @@ passport.use(new LocalStrategy(
   }
 ));
 
+app.configure('production', function () {
+  app.use(express.logger('default'));
+});
+
 app.configure('development', function () {
-  app.use(express.logger({ format: ':method :url :status :remote-addr :response-time'}));
+  app.use(express.logger('dev'));
+  app.locals.pretty = true;
 });
 
 app.configure(function () {
@@ -61,7 +66,6 @@ app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
-  app.use(express.logger('dev'));
   app.use(express.cookieParser());
   app.use(express.bodyParser({
     uploadDir: __dirname + '/public/uploads',
@@ -85,7 +89,13 @@ app.configure(function () {
 
 app.configure('development', function () {
   app.use(express.errorHandler());
-  app.locals.pretty = true;
+});
+
+app.configure('production', function () {
+  app.use(express.errorHandler({
+    showMessage: true,
+    showStack: false
+  }));
 });
 
 // require HTTP basic
