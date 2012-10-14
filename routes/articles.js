@@ -11,7 +11,7 @@ var Article = require('../datamodel/article')
   , checkError = shared.checkError
   , checkSaveError = shared.checkSaveError
   , getQuery = shared.getQuery
-  , gettags = shared.getTags;
+  , getTags = shared.getTags;
 
 exports.index = function (req, res) {
   Article.find(getQuery(req), null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {

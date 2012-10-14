@@ -121,14 +121,19 @@ $(function () {
     loadForm('/users/new', 'Create an account', '/users');
   });
 
-  $('.new-article').live('click', function (event) {
-    event.preventDefault();
-    loadForm('/articles/new', 'New Article', '/articles');
-  });
+  // $('.new-article').live('click', function (event) {
+  //   event.preventDefault();
+  //   loadForm('/articles/new', 'New Article', '/articles');
+  // });
 
-  $('.edit-article').live('click', function (event) {
-    event.preventDefault();
-    loadForm(event.target.href, 'Edit Article', '/articles');
+  // $('.edit-article').live('click', function (event) {
+  //   event.preventDefault();
+  //   loadForm(event.target.href, 'Edit Article', '/articles');
+  // });
+
+  $('.cancel-edit-article').live('click', function (event) {
+    event.preventDefault(); // eh, nothing?
+    document.location.href = '/';
   });
 
   $('.new-image').live('click', function (event) {
