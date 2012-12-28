@@ -12,4 +12,9 @@ block content
       .span7.content
         include articles/index
       .span2.links
-        include links/index
+        if links && links.length > 0
+          h4 Links
+          include links/index
+        if docs && docs.length > 0
+          h4 Documents
+          include docs/index

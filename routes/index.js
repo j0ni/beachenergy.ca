@@ -5,6 +5,7 @@
 var Article = require('../datamodel/article');
 var Image = require('../datamodel/image');
 var Link = require('../datamodel/link');
+var Doc = require('../datamodel/doc');
 var markdown = require('../lib/markdown');
 
 exports.articles = require('./articles');
@@ -41,7 +42,17 @@ exports.index = function (req, res) {
                 return;
               }
 
-              res.render('index', { articles: articles, images: images, links: links, markdown: markdown });
+              Doc.find({visible: true})
+                .sort('title')
+                .exec(function (error, docs) {
+                  if (error) {
+                    res.send(500, { error: error });
+                    return;
+                  }
+
+                  res.render('index', { articles: articles, images: images, links: links, docs: docs, markdown: markdown });
+
+                });
 
             });
         });

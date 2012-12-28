@@ -2,7 +2,7 @@ ul(class='unstyled')
   for link in links
     li
       a(href=link.url)= link.text
-      &nbsp;|&nbsp;
       if currentUser.canActAs('admin')
+        &nbsp;|&nbsp;
         small
           a(href='/links/'+link._id+'/edit', class='edit-link') edit

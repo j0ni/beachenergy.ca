@@ -1,4 +1,8 @@
-ul(class='doc-links')
+ul(class='unstyled')
   for doc in docs
     li
-      a(href='/docs/'+doc.slug, class='doc-link')= #{doc.title}
+      a(href='/docs/'+doc.slug, class='doc-link') #{doc.title}
+      if currentUser.canActAs('admin')
+        &nbsp;|&nbsp;
+        small
+          a(href='/docs/'+doc.slug+'/edit', class='edit-doc') edit
