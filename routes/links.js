@@ -23,7 +23,7 @@ exports.edit = function (req, res) {
     return;
 
   Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!link) {
@@ -54,7 +54,7 @@ exports.update = function (req, res) {
     return;
 
   Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!link) {

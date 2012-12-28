@@ -2,38 +2,31 @@
 
 /* global require, console, exports */
 
-var Image = require('../datamodel/image');
-var util = require('util');
-var fs = require('fs');
-var _ = require('underscore');
-var shared = require('./shared');
-var checkError = shared.checkError;
-var checkSaveError = shared.checkSaveError;
-var checkAuth = shared.checkAuth;
-var getQuery = shared.getQuery;
-var getTags = shared.getTags;
+var Image = require('../datamodel/image'),
+    util = require('util'),
+    fs = require('fs'),
+    _ = require('underscore'),
+    shared = require('./shared'),
+    checkError = shared.checkError,
+    checkSaveError = shared.checkSaveError,
+    checkAuth = shared.checkAuth,
+    getQuery = shared.getQuery,
+    getTags = shared.getTags,
+    files = require('./files');
 
 exports.index = function (req, res) {
-  var limit = parseInt(req.query.limit) || 5;
-  Image.find(getQuery(req))
-    .limit(limit)
-    .sort('-updated_at')
-    .select('title slug tags updated_at filename')
-    .exec(function (error, images) {
-      if (checkError(error, res))
-        return;
+  files.index(req, res, Image, function (error, images) {
+    if (checkError(error, req, res))
+      return;
 
-      images = images || [];
-      res.render('images/index', { images: images });
-    });
+    images = images || [];
+    res.render('images/index', { images: images });
+  });
 };
 
 exports.show = function (req, res) {
-  var query = getQuery(req);
-  query.slug = req.params['image'];
-
-  Image.findOne(query, function (error, image) {
-    if (checkError(error, res))
+  files.show(req, res, Image, function (error, image) {
+    if (checkError(error, req, res))
       return;
 
     if (!image) {
@@ -53,11 +46,8 @@ exports.new = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
-
-  Image.findOne({slug: req.params['image']}, function (error, image) {
-    if (checkError(error, res))
+  files.edit(req, res, Image, function (error, image) {
+    if (checkError(error, req, res))
       return;
 
     if (!image) {
@@ -71,10 +61,7 @@ exports.edit = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
-
-  buildImage(req).save(function (error, image) {
+  files.create(req, res, Image, function (error, image) {
     if (checkSaveError(error, req, res))
       return;
 
@@ -84,50 +71,16 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  if (checkAuth(req, res, 'writer', req.path))
+  files.update(req, res, Image, function (error, image) {
+    if (checkError(error, req, res))
+      return;
+
+    req.flash('success', 'Image successfully updated');
+    res.redirect('/images/' + image.slug);
     return;
-
-  Image.findOne({slug: req.params['image']}, function (error, image) {
-    if (checkError(error, res))
-      return;
-
-    if (!image) {
-      req.flash('error', 'Image not found');
-      res.redirect('/');
-      return;
-    }
-
-    var oldFilename = image.filename;
-
-    image = buildImage(req, image);
-
-    image.save(function (error, image) {
-      if (checkSaveError(error, req, res))
-        return;
-
-      fs.unlink('./public/uploads' + oldFilename, function (error) {
-        if (error) {
-          console.error('error deleting old image file: ' + oldFilename);
-        }
-
-        req.flash('success', 'Image successfully updated');
-        res.redirect('/images/' + image.slug);
-        return;
-      });
-    });
   });
 };
 
-function buildImage(req, image) {
-  image = image || new Image();
-
-  image.title = req.body['title'] || image.title;
-  image.tags = getTags(req.body) || image.tags;
-  image.type = req.files.image.type || image.type;
-  image.filename = req.files.image.path.substring(req.files.image.path.lastIndexOf('/')) || image.filename;
-
-  return image;
-}
 
 function sendForm(image, res) {
   res.render('images/form', { image: image });

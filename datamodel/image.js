@@ -1,7 +1,9 @@
 "use strict";
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+/* global require, module */
+
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 module.exports = (function () {
   var ImageSchema = new Schema({

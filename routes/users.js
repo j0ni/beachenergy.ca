@@ -28,7 +28,7 @@ exports.create = function (req, res) {
 
 exports.update = function (req, res) {
   User.findByEmail(req.user.email, function (error, user) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!user) {

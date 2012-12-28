@@ -16,10 +16,13 @@ exports.checkAuth = function (req, res, role, redirect) {
 };
 
 exports.checkError = checkError;
-function checkError(error, res) {
+function checkError(error, req, res, redirect) {
+  redirect = redirect || '/';
+
   if (error) {
     console.error(error);
-    res.send(500, {error: error});
+    req.flash('error', error);
+    res.redirect(redirect);
     return true;
   }
 };
@@ -33,7 +36,7 @@ exports.checkSaveError = function (error, req, res, redirect) {
     return true;
   }
 
-  return checkError(error, res);
+  return checkError(error, req, res, redirect);
 };
 
 exports.getQuery = function (req) {
@@ -41,7 +44,7 @@ exports.getQuery = function (req) {
     return {};
   else
     return { visible: true };
-}
+};
 
 exports.getTags = function (params) {
   var tags = params['tags'] || '';
@@ -49,7 +52,7 @@ exports.getTags = function (params) {
   tags = _.select(tags, function (tag) { return tag.length > 0; });
   if (tags.length > 0)
     return tags;
-}
+};
 
 function formatValidationErrors(error) {
   var result = '<p>Validation failed.</p><ul>';

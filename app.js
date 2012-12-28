@@ -1,38 +1,37 @@
-/* global require, process, console */
-/**
- * Module dependencies.
- */
+"use strict";
 
-var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path')
-  , auth = require('http-auth')
-  , mongoose = require('mongoose')
-  , config = require('./config')
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , User = require('./datamodel/user')
-  , flash = require('connect-flash')
-  , util = require('util')
-  , MongoStore = require('connect-mongo')(express);
+/* global require, process, console, __dirname */
+
+var express = require('express'),
+    routes = require('./routes'),
+    http = require('http'),
+    path = require('path'),
+    auth = require('http-auth'),
+    mongoose = require('mongoose'),
+    config = require('./config'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy,
+    User = require('./datamodel/user'),
+    flash = require('connect-flash'),
+    util = require('util'),
+    MongoStore = require('connect-mongo')(express);
 
 var app = express();
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.email);
 });
 
-passport.deserializeUser(function(email, done) {
+passport.deserializeUser(function (email, done) {
   User.findByEmail(email, function (error, user) {
     done(error, user);
   });
 });
 
 passport.use(new LocalStrategy(
-  function(email, password, done) {
+  function (email, password, done) {
     process.nextTick(function () {
-      User.findByEmail(email, function(error, user) {
+      User.findByEmail(email, function (error, user) {
         if (error)
           return done(error);
 
@@ -163,9 +162,9 @@ app.get('/articles/:article/edit', routes.articles.edit);
 app.get('/images', routes.images.index);
 app.post('/images', routes.images.create);
 app.get('/images/new', routes.images.new);
-app.get('/images/:image', routes.images.show);
-app.post('/images/:image', routes.images.update);
-app.get('/images/:image/edit', routes.images.edit);
+app.get('/images/:slug', routes.images.show);
+app.post('/images/:slug', routes.images.update);
+app.get('/images/:slug/edit', routes.images.edit);
 
 app.get('/links', routes.links.index);
 app.get('/links/new', routes.links.new);

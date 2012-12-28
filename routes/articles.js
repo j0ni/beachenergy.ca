@@ -15,7 +15,7 @@ var Article = require('../datamodel/article')
 
 exports.index = function (req, res) {
   Article.find(getQuery(req), null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     docs = docs || [];
@@ -29,7 +29,7 @@ exports.show = function (req, res) {
   console.log(util.inspect(query));
 
   Article.findOne(query, function (error, article) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!article) {
@@ -54,7 +54,7 @@ exports.edit = function (req, res) {
     return;
 
   Article.findOne({slug: req.params['article']}, function (error, article) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!article) {
@@ -85,7 +85,7 @@ exports.update = function (req, res) {
     return;
 
   Article.findOne({slug: req.params['article']}, function (error, article) {
-    if (checkError(error, res))
+    if (checkError(error, req, res))
       return;
 
     if (!article) {
