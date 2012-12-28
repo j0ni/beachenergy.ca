@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .container
+    h1 Manage Uploaded Documents
+    form
+      table.table.table-hover
+        thead
+          tr
+            th Title
+            th URL
+            th Visible
+        tbody
+          each doc in docs
+            tr
+              td #{doc.title}
+              td
+                a(href='/docs/'+doc.slug, class='doc-link') /docs/#{doc.slug}
+              td
+                input(class='set-doc-visible', type='checkbox', name=doc.slug, checked=doc.visible)
+              td
+                a(class='btn btn-danger delete-doc pull-right', href='/admin/docs/'+doc.slug+'/delete') Delete

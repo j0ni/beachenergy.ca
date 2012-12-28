@@ -2,18 +2,19 @@
 
 /* global require, console, exports */
 
-var User = require('../datamodel/user')
-  , shared = require('./shared')
-  , checkAuth = shared.checkAuth
-  , checkError = shared.checkError
-  , checkSaveError = shared.checkSaveError
-  , Article = require('../datamodel/article')
-  , markdown = require('../lib/markdown')
-  , Image = require('../datamodel/image')
-  , Link = require('../datamodel/link')
-  , fs = require('fs')
-  , util = require('util')
-  , ObjectId = require('mongoose').Types.ObjectId;
+var User = require('../datamodel/user'),
+    shared = require('./shared'),
+    checkAuth = shared.checkAuth,
+    checkError = shared.checkError,
+    checkSaveError = shared.checkSaveError,
+    Article = require('../datamodel/article'),
+    markdown = require('../lib/markdown'),
+    Image = require('../datamodel/image'),
+    Doc = require('../datamodel/doc'),
+    Link = require('../datamodel/link'),
+    fs = require('fs'),
+    util = require('util'),
+    ObjectId = require('mongoose').Types.ObjectId;
 
 exports.users = {
   index: function (req, res) {
@@ -172,6 +173,29 @@ exports.images = {
 
   delete: function (req, res) {
     deleteFile(req, res, Image);
+  }
+};
+
+exports.docs = {
+  index: function (req, res) {
+    if (checkAuth(req, res, 'admin', '/admin/docs'))
+      return;
+
+    Doc.find().sort('-updated_at').exec(function (error, docs) {
+      if (checkError(error, req, res))
+        return;
+
+      res.render('admin/docs', { docs: docs });
+      return;
+    });
+  },
+
+  setVisible: function (req, res) {
+    setVisible(req, res, '/admin/docs', Doc, 'Doc');
+  },
+
+  delete: function (req, res) {
+    deleteFile(req, res, Doc);
   }
 };
 

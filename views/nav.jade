@@ -8,6 +8,8 @@
             a(class='new-article', href='/articles/new')= 'New Article'
           li
             a(class='new-image', href='/image/new')= 'New Image'
+          li
+            a(class='new-doc', href='/docs/new')= 'New Document'
 
         if currentUser.canActAs('admin')
           li
@@ -23,6 +25,8 @@
                 a(class='article-admin', href='/admin/articles')= 'Manage Articles'
               li
                 a(class='image-admin', href='/admin/images')= 'Manage Images'
+              li
+                a(class='doc-admin', href='/admin/docs')= 'Manage Documents'
               li
                 a(class='link-admin', href='/admin/links')= 'Manage Links'
 

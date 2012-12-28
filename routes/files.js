@@ -25,11 +25,29 @@ exports.show = function (req, res, model, callback) {
   model.findOne(query, callback);
 };
 
-exports.edit = function (req, res, model, callback) {
+exports.new = function (req, res, model) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  model.findOne({slug: req.params['slug']}, callback);
+  sendForm(new model(), res);
+};
+
+exports.edit = function (req, res, model) {
+  if (checkAuth(req, res, 'writer'))
+    return;
+
+  model.findOne({slug: req.params['slug']}, function (error, file) {
+    if (checkError(error, req, res))
+      return;
+
+    if (!file) {
+      req.flash('error', 'File not found');
+      res.redirect('/');
+      return;
+    }
+
+    sendForm(file, res);
+  });
 };
 
 exports.create = function (req, res, model, callback) {
@@ -61,6 +79,10 @@ exports.update = function (req, res, model, callback) {
     });
   });
 };
+
+function sendForm(file, res) {
+  res.render('files/form', { file: file });
+}
 
 function buildFile(req, model, file) {
   file = file || new model();

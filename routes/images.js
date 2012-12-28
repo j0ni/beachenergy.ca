@@ -3,15 +3,10 @@
 /* global require, console, exports */
 
 var Image = require('../datamodel/image'),
-    util = require('util'),
-    fs = require('fs'),
-    _ = require('underscore'),
     shared = require('./shared'),
     checkError = shared.checkError,
     checkSaveError = shared.checkSaveError,
     checkAuth = shared.checkAuth,
-    getQuery = shared.getQuery,
-    getTags = shared.getTags,
     files = require('./files');
 
 exports.index = function (req, res) {
@@ -39,25 +34,11 @@ exports.show = function (req, res) {
 };
 
 exports.new = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
-
-  sendForm(new Image(), res);
+  files.new(req, res, Image);
 };
 
 exports.edit = function (req, res) {
-  files.edit(req, res, Image, function (error, image) {
-    if (checkError(error, req, res))
-      return;
-
-    if (!image) {
-      req.flash('error', 'Image not found');
-      res.redirect('/');
-      return;
-    }
-
-    sendForm(image, res);
-  });
+  files.edit(req, res, Image);
 };
 
 exports.create = function (req, res) {
@@ -80,8 +61,3 @@ exports.update = function (req, res) {
     return;
   });
 };
-
-
-function sendForm(image, res) {
-  res.render('images/form', { image: image });
-}

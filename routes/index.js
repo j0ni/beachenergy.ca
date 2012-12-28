@@ -9,6 +9,7 @@ var markdown = require('../lib/markdown');
 
 exports.articles = require('./articles');
 exports.images = require('./images');
+exports.docs = require('./docs');
 exports.links = require('./links');
 exports.users = require('./users');
 exports.admin = require('./admin');

@@ -70,7 +70,7 @@ $(function () {
     });
   });
 
-  $('.delete-link, .delete-image, .delete-user, .delete-article').live('click', function (event) {
+  $('.delete-link, .delete-image, .delete-doc, .delete-user, .delete-article').live('click', function (event) {
     event.preventDefault();
 
     $.ajax({
@@ -96,7 +96,7 @@ $(function () {
       flash('success', data);
     }).error(function (data) {
       flash('error', (data && data.responseText ? data.responseText : data));
-   });
+    });
   }
 
   $('.set-article-visible').live('change', function (event) {
@@ -105,6 +105,10 @@ $(function () {
 
   $('.set-image-visible').live('change', function (event) {
     setVisible(event, 'images')
+  });
+
+  $('.set-doc-visible').live('change', function (event) {
+    setVisible(event, 'docs')
   });
 
   $('.set-link-visible').live('change', function (event) {
@@ -121,16 +125,6 @@ $(function () {
     loadForm('/users/new', 'Create an account', '/users');
   });
 
-  // $('.new-article').live('click', function (event) {
-  //   event.preventDefault();
-  //   loadForm('/articles/new', 'New Article', '/articles');
-  // });
-
-  // $('.edit-article').live('click', function (event) {
-  //   event.preventDefault();
-  //   loadForm(event.target.href, 'Edit Article', '/articles');
-  // });
-
   $('.cancel-edit-article').live('click', function (event) {
     event.preventDefault(); // eh, nothing?
     document.location.href = '/';
@@ -144,6 +138,16 @@ $(function () {
   $('.edit-image').live('click', function (event) {
     event.preventDefault();
     loadForm(event.target.href, 'Edit Image', '/images');
+  });
+
+  $('.new-doc').live('click', function (event) {
+    event.preventDefault();
+    loadForm('/docs/new', 'New Document Upload', '/docs');
+  });
+
+  $('.edit-doc').live('click', function (event) {
+    event.preventDefault();
+    loadForm(event.target.href, 'Edit Document Upload', '/docs');
   });
 
   $('.new-link').live('click', function (event) {

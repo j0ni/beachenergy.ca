@@ -1,10 +1,10 @@
 form(method='POST', class='form-horizontal', enctype='multipart/form-data')
-  input(type='hidden', name='slug', value=image.slug)
+  input(type='hidden', name='slug', value=file.slug)
 
   .control-group
     label.control-label Title
     .controls
-      input(type='text', name='title', value=image.title)
+      input(type='text', name='title', value=file.title)
 
   .control-group
     label.control-label File

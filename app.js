@@ -70,7 +70,7 @@ app.configure(function () {
     uploadDir: __dirname + '/public/uploads',
     keepExtensions: true
   }));
-  app.use(express.limit('5mb'));
+  app.use(express.limit('20mb'));
   app.use(express.methodOverride());
   app.use(express.session({
     secret: 'smug hippies',
@@ -127,12 +127,19 @@ app.get('/', routes.index);
 app.get('/admin/users', routes.admin.users.index);
 app.post('/admin/users/:email', routes.admin.users.setRole);
 app.post('/admin/users/:email/delete', routes.admin.users.delete);
+
 app.get('/admin/articles', routes.admin.articles.index);
 app.post('/admin/articles/:slug', routes.admin.articles.setVisible);
 app.post('/admin/articles/:slug/delete', routes.admin.articles.delete);
+
 app.get('/admin/images', routes.admin.images.index);
 app.post('/admin/images/:slug', routes.admin.images.setVisible);
 app.post('/admin/images/:slug/delete', routes.admin.images.delete);
+
+app.get('/admin/docs', routes.admin.docs.index);
+app.post('/admin/docs/:slug', routes.admin.docs.setVisible);
+app.post('/admin/docs/:slug/delete', routes.admin.docs.delete);
+
 app.get('/admin/links', routes.admin.links.index);
 app.post('/admin/links/:id', routes.admin.links.setVisible);
 app.post('/admin/links/:id/delete', routes.admin.links.delete);
@@ -165,6 +172,13 @@ app.get('/images/new', routes.images.new);
 app.get('/images/:slug', routes.images.show);
 app.post('/images/:slug', routes.images.update);
 app.get('/images/:slug/edit', routes.images.edit);
+
+app.get('/docs', routes.docs.index);
+app.post('/docs', routes.docs.create);
+app.get('/docs/new', routes.docs.new);
+app.get('/docs/:slug', routes.docs.show);
+app.post('/docs/:slug', routes.docs.update);
+app.get('/docs/:slug/edit', routes.docs.edit);
 
 app.get('/links', routes.links.index);
 app.get('/links/new', routes.links.new);
