@@ -1,202 +1,203 @@
 "use strict";
 
-/* global require, console, exports */
+/* global require, console, exports, module */
 
-var User = require('../datamodel/user'),
-    shared = require('./shared'),
+var shared = require('./shared'),
     checkAuth = shared.checkAuth,
     checkError = shared.checkError,
     checkSaveError = shared.checkSaveError,
-    Article = require('../datamodel/article'),
     markdown = require('../lib/markdown'),
-    Image = require('../datamodel/image'),
-    Doc = require('../datamodel/doc'),
-    Link = require('../datamodel/link'),
     fs = require('fs'),
     util = require('util'),
     ObjectId = require('mongoose').Types.ObjectId;
 
-exports.users = {
-  index: function (req, res) {
-    if (checkAuth(req, res, 'admin'))
-      return;
+exports = module.exports = function (models) {
+  var routes = {};
 
-    User.find().sort('email').exec(function (error, users) {
-      if (checkError(error, req, res))
+  routes.users = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin'))
         return;
 
-      res.render('admin/users', { users: users, roles: User.Roles });
-      return;
-    });
-  },
-
-  setRole: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/users'))
-      return;
-
-    User.findByEmail(req.params['email'], function (error, user) {
-      if (checkError(error, req, res))
-        return;
-
-      if (!user) {
-        res.send(404, 'User ' + req.params['email'] + ' not found');
-        return;
-      }
-
-      user.role = req.body['role'];
-      user.save(function (error, user) {
-        if (checkSaveError(error, req, res, '/admin/users'))
+      models.User.find().sort('email').exec(function (error, users) {
+        if (checkError(error, req, res))
           return;
 
-        res.send(200, 'Role set to ' + user.role + ' for ' + req.params['email']);
+        res.render('admin/users', { users: users, roles: models.User.Roles });
         return;
       });
-    });
-  },
+    },
 
-  delete: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/users'))
-      return;
-
-    User.remove({email: req.params['email']}, function (error) {
-      if (checkError(error, req, res))
+    setRole: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/users'))
         return;
 
-      res.send(200, 'Deleted user ' + req.params['email']);
-      return;
-    });
-  }
-};
-
-exports.articles = {
-  index: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/articles'))
-      return;
-
-    Article.find().sort('-updated_at').exec(function (error, articles) {
-      if (checkError(error, req, res))
-        return;
-
-      res.render('admin/articles', { articles: articles, markdown: markdown });
-      return;
-    });
-  },
-
-  setVisible: function (req, res) {
-    setVisible(req, res, '/admin/articles', Article, 'Article');
-  },
-
-  delete: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/articles'))
-      return;
-
-    Article.remove({slug: req.params['slug']}, function (error) {
-      if (checkError(error, req, res))
-        return;
-
-
-      res.send(200, 'Article deleted: "' + req.params['slug'] + '"');
-      return;
-    });
-  }
-};
-
-exports.links = {
-  index: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/links'))
-      return;
-
-    Link.find().sort('-updated_at').exec(function (error, links) {
-      if (checkError(error, req, res))
-        return;
-
-      res.render('admin/links', { links: links });
-      return;
-    });
-  },
-
-  setVisible: function (req, res) {
-    if (checkAuth(req, res, 'admin', 'admin/links'))
-      return;
-
-    Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
-      if (checkError(error, req, res))
-        return true;
-
-      if (!link) {
-        res.send(404, 'Link not found');
-        return;
-      }
-
-      link.visible = (req.body['visible'] === 'true');
-      link.save(function (error, object) {
-        if (checkSaveError(error, req, res, '/admin/links'))
+      models.User.findByEmail(req.params['email'], function (error, user) {
+        if (checkError(error, req, res))
           return;
 
-        res.send(200, 'Link "' + link.url + '" is now ' + (link.visible ? 'visible to all' : 'invisible'));
+        if (!user) {
+          res.send(404, 'User ' + req.params['email'] + ' not found');
+          return;
+        }
+
+        user.role = req.body['role'];
+        user.save(function (error, user) {
+          if (checkSaveError(error, req, res, '/admin/users'))
+            return;
+
+          res.send(200, 'Role set to ' + user.role + ' for ' + req.params['email']);
+          return;
+        });
+      });
+    },
+
+    delete: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/users'))
+        return;
+
+      models.User.remove({email: req.params['email']}, function (error) {
+        if (checkError(error, req, res))
+          return;
+
+        res.send(200, 'Deleted user ' + req.params['email']);
         return;
       });
-    });
-  },
+    }
+  };
 
-  delete: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/links'))
-      return;
-
-    Link.remove({_id: ObjectId.fromString(req.params['id'])}, function (error) {
-      if (checkError(error, req, res))
+  routes.articles = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/articles'))
         return;
 
-      res.send(200, 'Link deleted');
-      return;
-    });
-  }
-};
+      models.Article.find().sort('-updated_at').exec(function (error, articles) {
+        if (checkError(error, req, res))
+          return;
 
-exports.images = {
-  index: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/images'))
-      return;
+        res.render('admin/articles', { articles: articles, markdown: markdown });
+        return;
+      });
+    },
 
-    Image.find().sort('-updated_at').exec(function (error, images) {
-      if (checkError(error, req, res))
+    setVisible: function (req, res) {
+      setVisible(req, res, '/admin/articles', models.Article, 'Article');
+    },
+
+    delete: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/articles'))
         return;
 
-      res.render('admin/images', { images: images });
-      return;
-    });
-  },
+      models.Article.remove({slug: req.params['slug']}, function (error) {
+        if (checkError(error, req, res))
+          return;
 
-  setVisible: function (req, res) {
-    setVisible(req, res, '/admin/images', Image, 'Image');
-  },
 
-  delete: function (req, res) {
-    deleteFile(req, res, Image);
-  }
-};
+        res.send(200, 'Article deleted: "' + req.params['slug'] + '"');
+        return;
+      });
+    }
+  };
 
-exports.docs = {
-  index: function (req, res) {
-    if (checkAuth(req, res, 'admin', '/admin/docs'))
-      return;
-
-    Doc.find().sort('-updated_at').exec(function (error, docs) {
-      if (checkError(error, req, res))
+  routes.links = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/links'))
         return;
 
-      res.render('admin/docs', { docs: docs });
-      return;
-    });
-  },
+      models.Link.find().sort('-updated_at').exec(function (error, links) {
+        if (checkError(error, req, res))
+          return;
 
-  setVisible: function (req, res) {
-    setVisible(req, res, '/admin/docs', Doc, 'Doc');
-  },
+        res.render('admin/links', { links: links });
+        return;
+      });
+    },
 
-  delete: function (req, res) {
-    deleteFile(req, res, Doc);
-  }
+    setVisible: function (req, res) {
+      if (checkAuth(req, res, 'admin', 'admin/links'))
+        return;
+
+      models.Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
+        if (checkError(error, req, res))
+          return true;
+
+        if (!link) {
+          res.send(404, 'Link not found');
+          return;
+        }
+
+        link.visible = (req.body['visible'] === 'true');
+        link.save(function (error, object) {
+          if (checkSaveError(error, req, res, '/admin/links'))
+            return;
+
+          res.send(200, 'Link "' + link.url + '" is now ' + (link.visible ? 'visible to all' : 'invisible'));
+          return;
+        });
+      });
+    },
+
+    delete: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/links'))
+        return;
+
+      models.Link.remove({_id: ObjectId.fromString(req.params['id'])}, function (error) {
+        if (checkError(error, req, res))
+          return;
+
+        res.send(200, 'Link deleted');
+        return;
+      });
+    }
+  };
+
+  routes.images = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/images'))
+        return;
+
+      models.Image.find().sort('-updated_at').exec(function (error, images) {
+        if (checkError(error, req, res))
+          return;
+
+        res.render('admin/images', { images: images });
+        return;
+      });
+    },
+
+    setVisible: function (req, res) {
+      setVisible(req, res, '/admin/images', models.Image, 'Image');
+    },
+
+    delete: function (req, res) {
+      deleteFile(req, res, models.Image);
+    }
+  };
+
+  routes.docs = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin', '/admin/docs'))
+        return;
+
+      models.Doc.find().sort('-updated_at').exec(function (error, docs) {
+        if (checkError(error, req, res))
+          return;
+
+        res.render('admin/docs', { docs: docs });
+        return;
+      });
+    },
+
+    setVisible: function (req, res) {
+      setVisible(req, res, '/admin/docs', models.Doc, 'Doc');
+    },
+
+    delete: function (req, res) {
+      deleteFile(req, res, models.Doc);
+    }
+  };
+
+  return routes;
 };
 
 function deleteFile(req, res, model) {

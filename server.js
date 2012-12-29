@@ -4,11 +4,19 @@
 
 var mongoose = require('mongoose'),
     config = require('./config'),
-    app = require('./app'),
+    makeApp = require('./app'),
     http = require('http');
 
-mongoose.connect(config.mongo.url);
+var connection = mongoose.createConnection(config.mongo.url);
 
-http.createServer(app).listen(app.get('port'), function () {
-  console.log("Express server listening on port " + app.get('port'));
+connection.once('open', function () {
+  var app = makeApp(connection);
+
+  http.createServer(app).listen(app.get('port'), function () {
+    console.log("Express server listening on port " + app.get('port'));
+  });
+});
+
+connection.on('error', function (error) {
+  console.error(error);
 });

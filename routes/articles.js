@@ -1,9 +1,8 @@
 "use strict";
 
-/* global require, exports, console */
+/* global require, exports, console, module */
 
-var Article = require('../datamodel/article'),
-    _ = require('underscore'),
+var _ = require('underscore'),
     util = require('util'),
     markdown = require('../lib/markdown'),
     shared = require('./shared'),
@@ -13,110 +12,116 @@ var Article = require('../datamodel/article'),
     getQuery = shared.getQuery,
     getTags = shared.getTags;
 
-exports.index = function (req, res) {
-  Article.find(getQuery(req), null, { limit: 3, sort: [['updated_at', -1]] }, function (error, docs) {
-    if (checkError(error, req, res))
+exports = module.exports = function (Article) {
+  var routes = {};
+
+  routes.index = function (req, res) {
+    Article.find(getQuery(req), null, { limit: 3, sort: [['updated_at', -1]] }, function (error, docs) {
+      if (checkError(error, req, res))
+        return;
+
+      docs = docs || [];
+      res.render('articles/index', { articles: docs, markdown: markdown });
+    });
+  };
+
+  routes.show = function (req, res) {
+    var query = getQuery(req);
+    query.slug = req.params['article'];
+
+    Article.findOne(query, function (error, article) {
+      if (checkError(error, req, res))
+        return;
+
+      if (!article) {
+        req.flash('error', 'Article not found');
+        res.redirect('/');
+        return;
+      }
+
+      res.render('articles/show', { article: article, markdown: markdown });
+    });
+  };
+
+  routes.new = function (req, res) {
+    if (checkAuth(req, res, 'writer'))
       return;
 
-    docs = docs || [];
-    res.render('articles/index', { articles: docs, markdown: markdown });
-  });
-};
+    sendForm(new Article(), res);
+  };
 
-exports.show = function (req, res) {
-  var query = getQuery(req);
-  query.slug = req.params['article'];
-
-  Article.findOne(query, function (error, article) {
-    if (checkError(error, req, res))
+  routes.edit = function (req, res) {
+    if (checkAuth(req, res, 'writer'))
       return;
 
-    if (!article) {
-      req.flash('error', 'Article not found');
-      res.redirect('/');
-      return;
-    }
+    Article.findOne({ slug: req.params['article'] }, function (error, article) {
+      if (checkError(error, req, res))
+        return;
 
-    res.render('articles/show', { article: article, markdown: markdown });
-  });
-};
+      if (!article) {
+        req.flash('error', 'Article not found');
+        req.redirect('/');
+        return;
+      }
 
-exports.new = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
+      sendForm(article, res);
+    });
+  }
 
-  sendForm(new Article(), res);
-};
-
-exports.edit = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
-
-  Article.findOne({ slug: req.params['article'] }, function (error, article) {
-    if (checkError(error, req, res))
+  routes.create = function (req, res) {
+    if (checkAuth(req, res, 'writer'))
       return;
 
-    if (!article) {
-      req.flash('error', 'Article not found');
-      req.redirect('/');
-      return;
-    }
-
-    sendForm(article, res);
-  });
-}
-
-exports.create = function (req, res) {
-  if (checkAuth(req, res, 'writer'))
-    return;
-
-  buildArticle(req.body).save(function (error, article) {
-    if (checkSaveError(error, req, res))
-      return;
-
-    req.flash('success', 'Article successfully created');
-    res.redirect('/');
-  });
-}
-
-exports.update = function (req, res) {
-  if (checkAuth(req, res, 'writer', req.path))
-    return;
-
-  Article.findOne( {slug: req.params['article'] }, function (error, article) {
-    if (checkError(error, req, res))
-      return;
-
-    if (!article) {
-      req.flash('error', 'Article not found');
-      res.redirect('/');
-      return;
-    }
-
-    article = buildArticle(req.body, article);
-
-    article.save(function (error, article) {
+    buildArticle(req.body).save(function (error, article) {
       if (checkSaveError(error, req, res))
         return;
 
-      req.flash('success', 'Article successfully updated');
-      res.redirect('/articles/' + article.slug);
-      return;
+      req.flash('success', 'Article successfully created');
+      res.redirect('/');
     });
-  });
-}
+  }
 
-function buildArticle(params, article) {
-  article = article || new Article();
+  routes.update = function (req, res) {
+    if (checkAuth(req, res, 'writer', req.path))
+      return;
 
-  article.title = params['title'] || article.title;
-  article.author = params['author'] || article.author;
-  article.content = params['content'] || article.content;
-  article.tags = getTags(params) || article.tags
+    Article.findOne( {slug: req.params['article'] }, function (error, article) {
+      if (checkError(error, req, res))
+        return;
 
-  return article;
-}
+      if (!article) {
+        req.flash('error', 'Article not found');
+        res.redirect('/');
+        return;
+      }
 
-function sendForm(article, res) {
-  res.render('articles/form', { article: article });
-}
+      article = buildArticle(req.body, article);
+
+      article.save(function (error, article) {
+        if (checkSaveError(error, req, res))
+          return;
+
+        req.flash('success', 'Article successfully updated');
+        res.redirect('/articles/' + article.slug);
+        return;
+      });
+    });
+  }
+
+  function buildArticle(params, article) {
+    article = article || new Article();
+
+    article.title = params['title'] || article.title;
+    article.author = params['author'] || article.author;
+    article.content = params['content'] || article.content;
+    article.tags = getTags(params) || article.tags;
+
+    return article;
+  }
+
+  function sendForm(article, res) {
+    res.render('articles/form', { article: article });
+  }
+
+  return routes;
+};
