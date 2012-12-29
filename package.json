@@ -18,6 +18,7 @@
     "less-middleware": "*",
     "mongoose": "*",
     "underscore": "*",
+    "async": "0.1.22",
     "marked": "*",
     "passport": "*",
     "passport-local": "*",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "supertest": "*"
+    "supertest": "*",
+    "superagent": "*"
   }
 }

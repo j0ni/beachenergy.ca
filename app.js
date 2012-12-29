@@ -73,6 +73,8 @@ exports = module.exports = function (connection) {
     app.use(express.methodOverride());
     app.use(express.session({
       secret: 'smug hippies',
+      // useful for debugging
+      // store: new express.session.MemoryStore()
       store: new MongoStore({
         mongoose_connection: connection
       })
@@ -80,6 +82,8 @@ exports = module.exports = function (connection) {
     app.use(flash());
     app.use(passport.initialize());
     app.use(passport.session());
+    // TODO
+    // app.use(express.csrf());
     app.use(app.router);
     app.use(require('less-middleware')({ src: __dirname + '/public' }));
     app.use(express.static(path.join(__dirname, 'public')));

@@ -2,7 +2,8 @@
 
 /* global require, exports, module */
 
-var markdown = require('../lib/markdown');
+var markdown = require('../lib/markdown'),
+    async = require('async');
 
 exports = module.exports = function (models) {
   var routes = {};
@@ -15,48 +16,45 @@ exports = module.exports = function (models) {
   routes.admin = require('./admin')(models);
 
   routes.index = function (req, res) {
-    models.Article.find({ visible: true })
-      .limit(3)
-      .sort('-updated_at')
-      .exec(function (error, articles) {
-        if (error) {
-          res.send(500, { error: error });
-          return;
-        }
+    var visible = { visible: true };
 
-        models.Image.find({ visible: true })
+    async.parallel([
+      function (callback) {
+        models.Article.find(visible)
+          .limit(3)
+          .sort('-updated_at')
+          .exec(callback);
+      },
+      function (callback) {
+        models.Image.find(visible)
           .limit(4)
           .sort('-updated_at')
-          .exec(function (error, images) {
-            if (error) {
-              res.send(500, { error: error });
-              return;
-            }
+          .exec(callback);
+      },
+      function (callback) {
+        models.Link.find(visible)
+          .sort('-updated_at')
+          .exec(callback);
+      },
+      function (callback) {
+        models.Doc.find(visible)
+          .sort('title')
+          .exec(callback);
+      }
+    ], function (error, results) {
+      if (error) {
+        res.send(500, { error: error });
+        return;
+      }
 
-            models.Link.find({ visible: true })
-              .sort('-updated_at')
-              .exec(function (error, links) {
-                if (error) {
-                  res.send(500, { error: error });
-                  return;
-                }
-
-                models.Doc.find({ visible: true })
-                  .sort('title')
-                  .exec(function (error, docs) {
-                    if (error) {
-                      res.send(500, { error: error });
-                      return;
-                    }
-
-                    res.render('index', { articles: articles, images: images, links: links, docs: docs, markdown: markdown });
-
-                  });
-
-              });
-          });
-
+      res.render('index', {
+        articles: results[0],
+        images: results[1],
+        links: results[2],
+        docs: results[3],
+        markdown: markdown
       });
+    });
   }
 
   return routes;

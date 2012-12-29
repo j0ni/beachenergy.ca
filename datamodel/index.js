@@ -1,6 +1,6 @@
 "use strict";
 
-/* global require, module, exports */
+/* global require, module, exports, console */
 
 var UserSchema = require('./user'),
     LinkSchema = require('./link'),
@@ -9,11 +9,21 @@ var UserSchema = require('./user'),
     DocSchema = require('./doc');
 
 exports = module.exports = function (connection) {
-  return {
-    User: connection.model('User', UserSchema),
-    Link: connection.model('Link', LinkSchema),
-    Article: connection.model('Article', ArticleSchema),
-    Image: connection.model('Image', ImageSchema),
-    Doc: connection.model('Doc', DocSchema)
-  };
+  var models = {};
+
+  models.User = getModel(connection, 'User', UserSchema);
+  models.Link = getModel(connection, 'Link', LinkSchema);
+  models.Article = getModel(connection, 'Article', ArticleSchema);
+  models.Image = getModel(connection, 'Image', ImageSchema);
+  models.Doc = getModel(connection, 'Doc', DocSchema);
+
+  return models;
+};
+
+function getModel(connection, name, schema) {
+  try {
+    return connection.model(name);
+  } catch (e) {
+    return connection.model(name, schema);
+  }
 };

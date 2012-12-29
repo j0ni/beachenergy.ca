@@ -5,26 +5,58 @@
 var makeApp = require('../app'),
     mongoose = require('mongoose'),
     assert = require('should'),
-    request = require('supertest');
+    request = require('supertest'),
+    makeFixtures = require('./fixtures'),
+    superagent = require('superagent');
 
 describe('routing', function () {
   var connection;
   var app;
+  var fixtures;
 
-  beforeEach(function (done) {
+  before(function (done) {
     connection = mongoose.createConnection('mongodb://127.0.0.1/beachenergy-test');
     connection.once('open', function () {
       app = makeApp(connection);
+      fixtures = makeFixtures(connection);
       done();
     });
   });
 
+  beforeEach(function (done) {
+    fixtures.load(function (error) {
+      assert(error === null);
+      done();
+    });
+  });
+
+
   afterEach(function (done) {
+    fixtures.unload(function (error) {
+      assert(error === null);
+      done();
+    });
+  });
+
+  after(function (done) {
     connection.close(function (error) {
       assert(error === undefined);
       done();
     });
   });
+
+  function loginUser(email, password, callback) {
+    request(app)
+      .post('/users/login')
+      .type('form')
+      .send({ username: email, password: password })
+      .end(function (error, res) {
+        assert(error === null);
+        var agent = superagent.agent();
+        agent.saveCookies(res);
+        return callback(agent);
+      });
+  }
 
   describe('GET /', function () {
     it('succeeds', function (done) {
@@ -127,27 +159,54 @@ describe('routing', function () {
       });
     });
 
-    describe('GET /users/login', function () {
-      it('succeeds', function (done) {
-        request(app)
-          .get('/users/login')
-          .expect(200, done);
+    describe('authentication', function () {
+      describe('GET /users/login', function () {
+        it('succeeds', function (done) {
+          request(app)
+            .get('/users/login')
+            .expect(200, done);
+        });
+      });
+
+      describe('POST /users/login', function () {
+        it('redirects to /', function (done) {
+          request(app)
+            .post('/users/login')
+            .type('form')
+            .send({ username: 'simon@spoon.com' })
+            .send({ password: 'dog' })
+            .expect(302)
+            .expect('Location', '/', done);
+        });
+
+        it('shows a logged in email address after redirect to GET /', function (done) {
+          loginUser('simon@spoon.com', 'dog', function (agent) {
+            var req = request(app).get('/');
+            agent.attachCookies(req);
+            req.end(function (error, res) {
+              res.text.should.include('simon');
+              done();
+            });
+          });
+        });
+      });
+
+      describe('GET /users/logout', function () {
+        it('redirects to /', function (done) {
+          request(app)
+            .get('/users/logout')
+            .expect(302, done);
+        });
       });
     });
 
-    describe('GET /users/new', function () {
-      it('succeeds', function (done) {
-        request(app)
-          .get('/users/new')
-          .expect(200, done);
-      });
-    });
-
-    describe('GET /users/logout', function () {
-      it('redirects to /', function (done) {
-        request(app)
-          .get('/users/logout')
-          .expect(302, done);
+    describe('signup', function () {
+      describe('GET /users/new', function () {
+        it('succeeds', function (done) {
+          request(app)
+            .get('/users/new')
+            .expect(200, done);
+        });
       });
     });
   });
