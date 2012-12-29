@@ -11,19 +11,19 @@ var UserSchema = require('./user'),
 exports = module.exports = function (connection) {
   var models = {};
 
-  models.User = getModel(connection, 'User', UserSchema);
-  models.Link = getModel(connection, 'Link', LinkSchema);
-  models.Article = getModel(connection, 'Article', ArticleSchema);
-  models.Image = getModel(connection, 'Image', ImageSchema);
-  models.Doc = getModel(connection, 'Doc', DocSchema);
+  models.User = getModel('User', UserSchema);
+  models.Link = getModel('Link', LinkSchema);
+  models.Article = getModel('Article', ArticleSchema);
+  models.Image = getModel('Image', ImageSchema);
+  models.Doc = getModel('Doc', DocSchema);
+
+  function getModel(name, schema) {
+    try {
+      return connection.model(name);
+    } catch (e) {
+      return connection.model(name, schema);
+    }
+  }
 
   return models;
-};
-
-function getModel(connection, name, schema) {
-  try {
-    return connection.model(name);
-  } catch (e) {
-    return connection.model(name, schema);
-  }
 };
