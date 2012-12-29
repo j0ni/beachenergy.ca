@@ -6,7 +6,6 @@ var express = require('express'),
     makeRoutes = require('./routes'),
     makeModels = require('./datamodel'),
     path = require('path'),
-    auth = require('http-auth'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     flash = require('connect-flash'),
@@ -95,17 +94,6 @@ exports = module.exports = function (connection) {
       showMessage: true,
       showStack: false
     }));
-  });
-
-  // require HTTP basic
-  var basic = auth({
-    authRealm: "Beach Energy - Private Area",
-    authList: ['beaches:beaches']
-  });
-
-  // filters
-  app.all('*', function (req, res, next) {
-    basic.apply(req, res, function () { next(); });
   });
 
   // session

@@ -29,7 +29,7 @@ exports = module.exports = function (models) {
     },
 
     setRole: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/users'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.User.findByEmail(req.params['email'], function (error, user) {
@@ -53,7 +53,7 @@ exports = module.exports = function (models) {
     },
 
     delete: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/users'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.User.remove({email: req.params['email']}, function (error) {
@@ -68,7 +68,7 @@ exports = module.exports = function (models) {
 
   routes.articles = {
     index: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/articles'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Article.find().sort('-updated_at').exec(function (error, articles) {
@@ -85,7 +85,7 @@ exports = module.exports = function (models) {
     },
 
     delete: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/articles'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Article.remove({slug: req.params['slug']}, function (error) {
@@ -101,7 +101,7 @@ exports = module.exports = function (models) {
 
   routes.links = {
     index: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/links'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Link.find().sort('-updated_at').exec(function (error, links) {
@@ -114,7 +114,7 @@ exports = module.exports = function (models) {
     },
 
     setVisible: function (req, res) {
-      if (checkAuth(req, res, 'admin', 'admin/links'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
@@ -138,10 +138,10 @@ exports = module.exports = function (models) {
     },
 
     delete: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/links'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
-      models.Link.remove({_id: ObjectId.fromString(req.params['id'])}, function (error) {
+      models.Link.remove({ _id: ObjectId.fromString(req.params['id']) }, function (error) {
         if (checkError(error, req, res))
           return;
 
@@ -153,7 +153,7 @@ exports = module.exports = function (models) {
 
   routes.images = {
     index: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/images'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Image.find().sort('-updated_at').exec(function (error, images) {
@@ -176,7 +176,7 @@ exports = module.exports = function (models) {
 
   routes.docs = {
     index: function (req, res) {
-      if (checkAuth(req, res, 'admin', '/admin/docs'))
+      if (checkAuth(req, res, 'admin'))
         return;
 
       models.Doc.find().sort('-updated_at').exec(function (error, docs) {
@@ -201,7 +201,7 @@ exports = module.exports = function (models) {
 };
 
 function deleteFile(req, res, model) {
-  if (checkAuth(req, res, 'admin', req.path))
+  if (checkAuth(req, res, 'admin'))
     return;
 
   model.findOne({slug: req.params['slug']}, function (error, file) {
@@ -235,7 +235,7 @@ function deleteFile(req, res, model) {
 }
 
 function setVisible(req, res, path, model, name) {
-  if (checkAuth(req, res, 'admin', path))
+  if (checkAuth(req, res, 'admin'))
     return;
 
   model.findOne({slug: req.params['slug']}, function (error, object) {

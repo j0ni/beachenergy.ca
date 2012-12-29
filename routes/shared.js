@@ -8,7 +8,7 @@ exports.checkAuth = function (req, res, role, redirect) {
   role = role || 'admin';
   redirect = redirect || '/';
 
-  if (!req.user.canActAs(role)) {
+  if (! (req.user && req.user.canActAs(role))) {
     req.flash('error', 'Not authorized');
     res.redirect(redirect);
     return true;
