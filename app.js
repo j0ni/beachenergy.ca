@@ -178,7 +178,6 @@ app.get('/docs/:slug', routes.docs.show);
 app.post('/docs/:slug', routes.docs.update);
 app.get('/docs/:slug/edit', routes.docs.edit);
 
-app.get('/links', routes.links.index);
 app.get('/links/new', routes.links.new);
 app.post('/links', routes.links.create);
 app.get('/links/:id/edit', routes.links.edit);

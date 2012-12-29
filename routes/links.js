@@ -2,14 +2,14 @@
 
 /* global exports, console, require */
 
-var Link = require('../datamodel/link');
-var shared = require('./shared');
-var checkError = shared.checkError;
-var checkSaveError = shared.checkSaveError;
-var checkAuth = shared.checkAuth
-var getQuery = shared.getQuery;
-var getTags = shared.getTags;
-var ObjectId = require('mongoose').Types.ObjectId;
+var Link = require('../datamodel/link'),
+    shared = require('./shared'),
+    checkError = shared.checkError,
+    checkSaveError = shared.checkSaveError,
+    checkAuth = shared.checkAuth,
+    getQuery = shared.getQuery,
+    getTags = shared.getTags,
+    ObjectId = require('mongoose').Types.ObjectId;
 
 exports.new = function (req, res) {
   if (checkAuth(req, res, 'admin'))
@@ -22,7 +22,7 @@ exports.edit = function (req, res) {
   if (checkAuth(req, res, 'admin'))
     return;
 
-  Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
+  Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
     if (checkError(error, req, res))
       return;
 
@@ -53,7 +53,7 @@ exports.update = function (req, res) {
   if (checkAuth(req, res, 'admin'))
     return;
 
-  Link.findOne({_id: ObjectId.fromString(req.params['id'])}, function (error, link) {
+  Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
     if (checkError(error, req, res))
       return;
 
@@ -78,7 +78,7 @@ function buildLink(params, link) {
 
   link.url = params['url'] || link.url;
   link.text = params['text'] || link.text;
-  link.tags = getTags(params) || link.tags
+  link.tags = getTags(params) || link.tags;
 
   return link;
 }
