@@ -7,7 +7,6 @@ var express = require('express'),
     makeModels = require('./datamodel'),
     path = require('path'),
     auth = require('http-auth'),
-    config = require('./config'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     flash = require('connect-flash'),
@@ -76,7 +75,7 @@ exports = module.exports = function (connection) {
     app.use(express.session({
       secret: 'smug hippies',
       store: new MongoStore({
-        url: config.mongo.url
+        mongoose_connection: connection
       })
     }));
     app.use(flash());
@@ -111,7 +110,7 @@ exports = module.exports = function (connection) {
 
   // session
   app.all('*', function (req, res, next) {
-    app.locals.currentUser = req.user || new User();
+    app.locals.currentUser = req.user || new models.User();
     app.locals.messages = {
       error: req.flash('error'),
       info: req.flash('info'),
