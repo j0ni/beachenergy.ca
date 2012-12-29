@@ -3,5 +3,5 @@ for article in articles
   .article-meta
     small by #{article.author}, #{article.updated_at} &nbsp;
       a(href='/articles/'+article.slug) link to full article
- 
-  !{markdown(article.content, 200)}
+
+  !{markdown(article.content, 500)}
