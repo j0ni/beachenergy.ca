@@ -30,7 +30,7 @@ exports = module.exports = function (Doc) {
         return;
       }
 
-      res.redirect('/uploads/'+doc.filename);
+      res.redirect('/uploads'+doc.filename);
     });
   };
 
