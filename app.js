@@ -1,13 +1,11 @@
 "use strict";
 
-/* global require, process, console, __dirname */
+/* global require, process, console, __dirname, exports, module */
 
 var express = require('express'),
     routes = require('./routes'),
-    http = require('http'),
     path = require('path'),
     auth = require('http-auth'),
-    mongoose = require('mongoose'),
     config = require('./config'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
@@ -16,7 +14,7 @@ var express = require('express'),
     util = require('util'),
     MongoStore = require('connect-mongo')(express);
 
-var app = express();
+var app = exports = module.exports = express();
 
 passport.serializeUser(function (user, done) {
   done(null, user.email);
@@ -185,10 +183,3 @@ app.get('/links/new', routes.links.new);
 app.post('/links', routes.links.create);
 app.get('/links/:id/edit', routes.links.edit);
 app.post('/links/:id', routes.links.update);
-
-
-mongoose.connect(config.mongo.url);
-
-http.createServer(app).listen(app.get('port'), function () {
-  console.log("Express server listening on port " + app.get('port'));
-});

@@ -2,19 +2,19 @@
 
 /* global require, exports, console */
 
-var Article = require('../datamodel/article')
-  , _ = require('underscore')
-  , util = require('util')
-  , markdown = require('../lib/markdown')
-  , shared = require('./shared')
-  , checkAuth = shared.checkAuth
-  , checkError = shared.checkError
-  , checkSaveError = shared.checkSaveError
-  , getQuery = shared.getQuery
-  , getTags = shared.getTags;
+var Article = require('../datamodel/article'),
+    _ = require('underscore'),
+    util = require('util'),
+    markdown = require('../lib/markdown'),
+    shared = require('./shared'),
+    checkAuth = shared.checkAuth,
+    checkError = shared.checkError,
+    checkSaveError = shared.checkSaveError,
+    getQuery = shared.getQuery,
+    getTags = shared.getTags;
 
 exports.index = function (req, res) {
-  Article.find(getQuery(req), null, {limit: 3, sort: [['updated_at', -1]]}, function (error, docs) {
+  Article.find(getQuery(req), null, { limit: 3, sort: [['updated_at', -1]] }, function (error, docs) {
     if (checkError(error, req, res))
       return;
 
@@ -52,7 +52,7 @@ exports.edit = function (req, res) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  Article.findOne({slug: req.params['article']}, function (error, article) {
+  Article.findOne({ slug: req.params['article'] }, function (error, article) {
     if (checkError(error, req, res))
       return;
 
@@ -83,7 +83,7 @@ exports.update = function (req, res) {
   if (checkAuth(req, res, 'writer', req.path))
     return;
 
-  Article.findOne({slug: req.params['article']}, function (error, article) {
+  Article.findOne( {slug: req.params['article'] }, function (error, article) {
     if (checkError(error, req, res))
       return;
 

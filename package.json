@@ -19,7 +19,7 @@
     "http-auth": "*",
     "mongoose": "*",
     "underscore": "*",
-    "github-flavored-markdown": "*",
+    "marked": "*",
     "passport": "*",
     "passport-local": "*",
     "bcrypt": "*",
