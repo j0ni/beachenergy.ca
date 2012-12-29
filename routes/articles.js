@@ -26,7 +26,6 @@ exports.index = function (req, res) {
 exports.show = function (req, res) {
   var query = getQuery(req);
   query.slug = req.params['article'];
-  console.log(util.inspect(query));
 
   Article.findOne(query, function (error, article) {
     if (checkError(error, req, res))
