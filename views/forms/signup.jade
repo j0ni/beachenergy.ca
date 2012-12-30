@@ -1,0 +1,96 @@
+extends ../layout
+
+block content
+  .container
+    .container-fluid
+      h2 Sign Up for BCEC
+      .row-fluid
+        .span4
+          form(method='POST', action='/forms/signup', enctype='multipart/form-data')
+            .control-group
+              label.control-label Name
+              .controls
+                input(type='text', name='name', class='input-xlarge', value=form_content.name)
+
+            .control-group
+              label.control-label Email
+              .controls
+                input(type='email', name='email', class='input-xlarge', value=form_content.email)
+
+            .control-group
+              label.control-label Address
+              .controls
+                input(type='text', name='address1', class='input-xlarge', value=form_content.address1)
+
+            .control-group
+              label.control-label
+              .controls
+                input(type='text', name='address2', class='input-xlarge', value=form_content.address2)
+
+            .control-group
+              label.control-label City
+              .controls
+                input(type='text', name='city', class='input-xlarge', value=form_content.city)
+
+            .control-group
+              label.control-label Postal Code
+              .controls
+                input(type='text', name='postcode', class='input-small', value=form_content.postcode)
+
+            .control-group
+              label.control-label Phone #
+              .controls
+                input(type='text', name='phone', class='input-xlarge', value=form_content.phone)
+
+            .control-group
+              label.control-label Do you own a property in Toronto?
+              .controls
+                label.radio
+                  input(type='radio', name='owns', value='yes', checked=(form_content.owns === 'yes'))
+                  | Yes
+                label.radio
+                  input(type='radio', name='owns', value='no', checked=(form_content.owns === 'no'))
+                  | No
+
+            .control-group.owned-for
+              label.control-label If yes, for how long?
+              .controls
+                input(type='number', name='owned_for', value=form_content.owned_for)
+
+            .control-group
+              label.control-label Comments or questions?
+              .controls
+                textarea(rows=10, name='comments', class='input-xlarge', value=form_content.comments)
+
+            .control-group
+              .controls
+                !{recaptcha_form}
+
+            .control-group
+              .controls
+                input(type='submit', class='btn btn-primary')
+
+        .span4
+          p The GOOD NEWS!!
+
+          p The Ontario Power Authority (OPA) is now accepting Small FIT applications for renewable energy.
+
+          p The Ontario Power Authority really wants to make the SmallFIT application process tough. Our BCEC is only eligible for the Community solar power set aside (CCSA) of 25 Mega Watts if we have 50 BCEC property owner members approved by the OPA when we submit our application. The application time window is very short (December 14, 2012 to January 18, 2013)
+
+          p Therefore, Each BEACH COMMUNITY ENERGY COOP member has to fill out an official OPA coop membership form. As you will see this new OPA FIT form needs your PIN (property identification number) from your property tax bill and requires your signature to be personally witnessed by a notary. I will arrange for the notary to do that when we come to see you (see attached consent form).
+
+          p The form and information about it is also on the&nbsp;
+            a(href='http://fit.powerauthority.on.ca/what-feed-tariff-program') OPA FIT web site.
+
+          p Click&nbsp;
+            a(href="http://fit.powerauthority.on.ca/what-feed-tariff-program") here
+            |&nbsp;for the smallFIT program and the rules 2.1.
+
+          p We only have until mid January 2013 to do this please so try to reach me (647-608-4178) so that I can set up and visit your home with a notary public in tow.
+
+          p I hope your spouse can join too as this process will take a long time and we need to be finished to apply before January 18.
+
+          p.pull-right
+            | Regards,
+            br
+            | Bob Spencer

@@ -176,5 +176,8 @@ exports = module.exports = function (connection) {
   app.get('/links/:id/edit', routes.links.edit);
   app.post('/links/:id', routes.links.update);
 
+  app.get('/forms/:form', routes.forms.show);
+  app.post('/forms/:form', routes.forms.submit);
+
   return app;
 };

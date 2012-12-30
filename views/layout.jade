@@ -20,13 +20,13 @@ html
       .row
         .span12
           .flash-message
-            if messages.error != ''
+            if messages.error && messages.error != ''
               .alert.alert-error !{messages.error}
-            if messages.info != ''
+            if messages.info && messages.info != ''
               .alert.alert-info !{messages.info}
-            if messages.warning != ''
+            if messages.warning && messages.warning != ''
               .alert.alert-warning !{messages.warning}
-            if messages.success != ''
+            if messages.success && messages.success != ''
               .alert.alert-success !{messages.success}
 
     block content

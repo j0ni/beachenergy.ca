@@ -10,6 +10,7 @@ var files = require('./files'),
 
 exports = module.exports = function (Doc) {
   var routes = {};
+
   routes.index = function (req, res) {
     files.index(req, res, Doc, function (error, docs) {
       if (checkError(error, req, res))

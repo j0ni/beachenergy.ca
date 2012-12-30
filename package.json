@@ -24,7 +24,9 @@
     "passport-local": "*",
     "bcrypt": "*",
     "connect-flash": "*",
-    "connect-mongo": "*"
+    "connect-mongo": "*",
+    "nodemailer": "0.3.x",
+    "recaptcha": "1.x"
   },
   "devDependencies": {
     "mocha": "*",

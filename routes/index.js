@@ -14,6 +14,7 @@ exports = module.exports = function (models) {
   routes.links = require('./links')(models.Link);
   routes.users = require('./users')(models.User);
   routes.admin = require('./admin')(models);
+  routes.forms = require('./forms')();
 
   routes.index = function (req, res) {
     var visible = { visible: true };
