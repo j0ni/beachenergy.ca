@@ -6,7 +6,8 @@ var UserSchema = require('./user'),
     LinkSchema = require('./link'),
     ArticleSchema = require('./article'),
     ImageSchema = require('./image'),
-    DocSchema = require('./doc');
+    DocSchema = require('./doc'),
+    FormSchema = require('./form');
 
 exports = module.exports = function (connection) {
   var models = {};
@@ -16,6 +17,7 @@ exports = module.exports = function (connection) {
   models.Article = getModel('Article', ArticleSchema);
   models.Image = getModel('Image', ImageSchema);
   models.Doc = getModel('Doc', DocSchema);
+  models.Form = getModel('Form', FormSchema);
 
   function getModel(name, schema) {
     try {

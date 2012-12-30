@@ -1,13 +1,13 @@
 "use strict";
 
-/* global require, exports, module, console */
+/* global require, exports, module, console, process */
 
 var nodemailer = require('nodemailer'),
     config = require('../config'),
     Recaptcha = require('recaptcha').Recaptcha,
     util = require('util');
 
-exports = module.exports = function () {
+exports = module.exports = function (Form) {
   var routes = {};
 
   routes.show = function (req, res) {
@@ -34,33 +34,58 @@ exports = module.exports = function () {
 
     recaptcha.verify(function (success, error_code) {
       if (success) {
-        var transport = nodemailer.createTransport(config.email.name, config.email.options);
-        transport.sendMail({
-          from: 'web@beachenergy.ca',
-          to: 'j@lollyshouse.ca',
-          subject: 'new signup form',
-          text: util.inspect(req.body)
-        }, function (error, response) {
-          if (error)
-            console.log(error);
+        delete req.body.recaptcha_challenge_field;
+        delete req.body.recaptcha_response_field;
+        var user = '';
+        if (req.user) user = req.user.email;
 
-          transport.close();
+        (new Form({
+          form: req.params['form'],
+          user: user,
+          content: req.body
+        })).save(function (error, form) {
+          if (handleError(error, req, res, recaptcha))
+            return;
+
+          process.nextTick(function () {
+            var transport = nodemailer.createTransport(config.email.name, config.email.options);
+            transport.sendMail({
+              from: 'web@beachenergy.ca',
+              to: 'j@lollyshouse.ca',
+              subject: 'new signup form',
+              text: util.inspect(req.body)
+            }, function (error, response) {
+              if (error)
+                console.log(error);
+
+              transport.close();
+            });
+          });
+
+          req.flash('success', "Thank you! We'll be in touch.");
+          res.redirect('/');
+
         });
 
-        req.flash('success', "Thank you! We'll be in touch.");
-        res.redirect('/');
         return;
       }
 
+      handleError('Recaptcha error - please try again', req, res, recaptcha);
+    });
+  };
+
+  function handleError(error, req, res, recaptcha) {
+    if (error) {
       res.render('forms/' + req.params['form'], {
         recaptcha_form: recaptcha.toHTML(),
         form_content: req.body,
         messages: {
-          error: 'Recaptcha error - please try again'
+          error: error
         }
       });
-    });
-  };
+      return true;
+    }
+  }
 
   return routes;
 };
