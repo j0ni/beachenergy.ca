@@ -23,18 +23,18 @@ exports = module.exports = function (models) {
       function (callback) {
         models.Article.find(visible)
           .limit(3)
-          .sort('-updated_at')
+          .sort('-created_at')
           .exec(callback);
       },
       function (callback) {
         models.Image.find(visible)
           .limit(4)
-          .sort('-updated_at')
+          .sort('-created_at')
           .exec(callback);
       },
       function (callback) {
         models.Link.find(visible)
-          .sort('-updated_at')
+          .sort('-created_at')
           .exec(callback);
       },
       function (callback) {
