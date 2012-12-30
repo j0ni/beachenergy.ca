@@ -4,6 +4,8 @@ block content
   .container
     h1 Form Detail
     dl
+      dt submitted
+      dd #{form.created_at}
       each key in Object.keys(form.content).reverse()
         dt #{key}
         dd #{form.content[key]}

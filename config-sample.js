@@ -5,7 +5,8 @@ module.exports = {
 
   email: {
     name: 'Sendmail',
-    options: '/usr/sbin/sendmail'
+    options: '/usr/sbin/sendmail',
+    recipient: 'j@lollyshouse.ca'
   }
 
   // or...

@@ -51,9 +51,10 @@ exports = module.exports = function (Form) {
             var transport = nodemailer.createTransport(config.email.name, config.email.options);
             transport.sendMail({
               from: 'web@beachenergy.ca',
-              to: 'j@lollyshouse.ca',
-              subject: 'new signup form',
-              text: util.inspect(req.body)
+              to: config.email.recipient,
+              subject: 'New signup form submitted',
+              text: util.inspect(req.body),
+              html: constructBody(req.body)
             }, function (error, response) {
               if (error)
                 console.log(error);
@@ -73,6 +74,16 @@ exports = module.exports = function (Form) {
       handleError('Recaptcha error - please try again', req, res, recaptcha);
     });
   };
+
+  function constructBody(content) {
+    var body = '<html><body><dl>';
+    Object.keys(content).forEach(function (key) {
+      body += '<dt>' + key + '</dt>';
+      body += '<dd>' + content[key] + '</dd>';
+    });
+    body += '</dl></body></html>';
+    return body;
+  }
 
   function handleError(error, req, res, recaptcha) {
     if (error) {

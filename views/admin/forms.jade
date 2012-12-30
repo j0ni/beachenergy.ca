@@ -6,13 +6,15 @@ block content
     form
       table.table.table-hover
         thead
-          th Form Type
+          th Type
+          th Submitted
           th User (optional)
           th Content
         tbody
           each form in forms
             tr
               td #{form.form}
+              td #{form.created_at.toDateString()}
               td #{form.user}
               td #{JSON.stringify(form.content).substr(0, 80) + '...'}
               td.pull-right
