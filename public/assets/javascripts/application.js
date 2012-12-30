@@ -70,7 +70,7 @@ $(function () {
     });
   });
 
-  $('.delete-link, .delete-image, .delete-doc, .delete-user, .delete-article').live('click', function (event) {
+  $('.delete-link, .delete-image, .delete-doc, .delete-user, .delete-article, .delete-form').live('click', function (event) {
     event.preventDefault();
 
     $.ajax({

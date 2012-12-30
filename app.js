@@ -135,6 +135,10 @@ exports = module.exports = function (connection) {
   app.post('/admin/links/:id', routes.admin.links.setVisible);
   app.post('/admin/links/:id/delete', routes.admin.links.delete);
 
+  app.get('/admin/forms', routes.admin.forms.index);
+  app.get('/admin/forms/:id', routes.admin.forms.show);
+  app.post('/admin/forms/:id/delete', routes.admin.forms.delete);
+
   app.get('/users/login', routes.users.login);
   app.post('/users/login', passport.authenticate('local', {
     failureRedirect: '/',

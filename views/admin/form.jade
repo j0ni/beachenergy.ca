@@ -1,0 +1,9 @@
+extends ../layout
+
+block content
+  .container
+    h1 Form Detail
+    dl
+      each key in Object.keys(form.content).reverse()
+        dt #{key}
+        dd #{form.content[key]}

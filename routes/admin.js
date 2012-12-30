@@ -151,6 +151,47 @@ exports = module.exports = function (models) {
     }
   };
 
+  routes.forms = {
+    index: function (req, res) {
+      if (checkAuth(req, res, 'admin'))
+        return;
+
+      models.Form.find().sort('-updated_at').exec(function (error, forms) {
+        if (checkError(error, req, res))
+          return;
+
+        res.render('admin/forms', { forms: forms });
+        return;
+      });
+    },
+
+    show: function (req, res) {
+      if (checkAuth(req, res, 'admin'))
+        return;
+
+      models.Form.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, form) {
+        if (checkError(error, req, res))
+          return;
+
+        res.render('admin/form', { form: form });
+        return;
+      });
+    },
+
+    delete: function (req, res) {
+      if (checkAuth(req, res, 'admin'))
+        return;
+
+      models.Form.remove({ _id: ObjectId.fromString(req.params['id']) }, function (error) {
+        if (checkError(error, req, res))
+          return;
+
+        res.send(200, 'Form submission deleted');
+        return;
+      });
+    }
+  };
+
   routes.images = {
     index: function (req, res) {
       if (checkAuth(req, res, 'admin'))

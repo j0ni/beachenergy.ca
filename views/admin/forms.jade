@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+  .container
+    h1 Manage Form Submissions
+    form
+      table.table.table-hover
+        thead
+          th Form Type
+          th User (optional)
+          th Content
+        tbody
+          each form in forms
+            tr
+              td #{form.form}
+              td #{form.user}
+              td #{JSON.stringify(form.content).substr(0, 80) + '...'}
+              td.pull-right
+                a(class='btn', href='/admin/forms/'+form._id) Detail
+                |&nbsp;
+                a(class='btn btn-danger delete-form', href='/admin/forms/'+form._id+'/delete') Delete
