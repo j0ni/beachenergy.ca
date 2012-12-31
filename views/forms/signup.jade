@@ -43,7 +43,7 @@ block content
                 input(type='text', name='phone', class='input-xlarge', value=form_content.phone)
 
             .control-group
-              label.control-label Do you own a property in Toronto?
+              label.control-label Have you owned a property in Toronto for more than 2 years?
               .controls
                 label.radio
                   input(type='radio', name='owns', value='yes', checked=(form_content.owns === 'yes'))
@@ -51,11 +51,6 @@ block content
                 label.radio
                   input(type='radio', name='owns', value='no', checked=(form_content.owns === 'no'))
                   | No
-
-            .control-group.owned-for
-              label.control-label If yes, for how long?
-              .controls
-                input(type='number', name='owned_for', value=form_content.owned_for)
 
             .control-group
               label.control-label Comments or questions?
