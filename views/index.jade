@@ -7,17 +7,16 @@ block content
         p.lead An association of neighbours and parents of students of Kew Beach Public School in Toronto. Building a community-based grass roots renewable energy program.
   .container
     .row
-      .span3.sidebar
+      .span4.sidebar
         include images/index
-      .span7.content
-        .alert
-          center
-            a(href='/forms/signup') Sign up for the Beach Community Energy Co-op Today!
-        include articles/index
-      .span2.links
         if links && links.length > 0
           h4 Links
           include links/index
         if docs && docs.length > 0
           h4 Documents
           include docs/index
+      .span8.content
+        .alert
+          center
+            a(href='/forms/signup') Sign up for the Beach Community Energy Co-op Today!
+        include articles/index

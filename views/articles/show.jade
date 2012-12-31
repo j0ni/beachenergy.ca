@@ -4,8 +4,10 @@ block content
   .container
     h1.article-title= article.title
     .article-meta
-      small by #{article.author}, #{article.updated_at} &nbsp;
+      small posted by #{article.author}, at #{article.created_at.toDateString()} &nbsp;
         if currentUser.canActAs('writer')
-          a(href='/articles/'+article.slug+'/edit', class='edit-article') edit article
+          a(href='/articles/'+article.slug+'/edit', class='edit-article') edit
+
     .article-content
+      br
       !{markdown(article.content)}
