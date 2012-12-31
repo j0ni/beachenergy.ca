@@ -4,5 +4,5 @@ for article in articles
   !{markdown(article.content, 500)}
 
   .article-meta
-    small posted at #{article.created_at.toDateString()} -&nbsp;
+    small posted #{article.created_at.toDateString()} -&nbsp;
       a(href='/articles/'+article.slug) link to full article
