@@ -1,13 +1,11 @@
 "use strict";
 
-/* global require, exports, module, console, process */
-
 var nodemailer = require('nodemailer'),
     config = require('../config'),
     Recaptcha = require('recaptcha').Recaptcha,
     util = require('util');
 
-exports = module.exports = function (Form) {
+module.exports = function (Form) {
   var routes = {};
 
   routes.show = function (req, res) {
@@ -19,7 +17,7 @@ exports = module.exports = function (Form) {
 
     var recaptcha = new Recaptcha(config.recaptcha.publicKey, config.recaptcha.privateKey);
 
-    res.render('forms/' + req.params['form'], {
+    res.render('forms/' + req.params.form, {
       recaptcha_form: recaptcha.toHTML(),
       form_content: formContent
     });
@@ -40,7 +38,7 @@ exports = module.exports = function (Form) {
         if (req.user) user = req.user.email;
 
         (new Form({
-          form: req.params['form'],
+          form: req.params.form,
           user: user,
           content: req.body
         })).save(function (error, form) {
@@ -87,7 +85,7 @@ exports = module.exports = function (Form) {
 
   function handleError(error, req, res, recaptcha) {
     if (error) {
-      res.render('forms/' + req.params['form'], {
+      res.render('forms/' + req.params.form, {
         recaptcha_form: recaptcha.toHTML(),
         form_content: req.body,
         messages: {

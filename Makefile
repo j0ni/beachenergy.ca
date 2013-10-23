@@ -1,9 +1,10 @@
-TESTS = test/*.spec.js
+TESTS = "test/*.spec.js"
 REPORTER = list
 TIMEOUT = 100000
-MOCHA = node_modules/.bin/mocha
+MOCHA = ./node_modules/.bin/mocha
+JSHINT = ./node_modules/.bin/jshint
 
-watch: npm-install
+watch: npm
 	@NODE_ENV=test $(MOCHA) \
 		--timeout $(TIMEOUT) \
 		--reporter $(REPORTER) \
@@ -12,7 +13,10 @@ watch: npm-install
 		--watch \
 		$(TESTS)
 
-test: npm-install
+jshint:
+	@$(JSHINT) .
+
+test: npm
 	@NODE_ENV=test $(MOCHA) \
 		--bail \
 		--timeout $(TIMEOUT) \
@@ -26,7 +30,7 @@ test-ci: npm-install
 		--no-colors \
 		$(TESTS)
 
-npm-install:
+npm:
 	@npm install -d
 
-.PHONY: test test-ci npm-install watch
+.PHONY: test test-ci npm watch jshint

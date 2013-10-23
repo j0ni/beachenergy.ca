@@ -1,7 +1,5 @@
 "use strict";
 
-/* global exports, console, require, module */
-
 var shared = require('./shared'),
     checkError = shared.checkError,
     checkSaveError = shared.checkSaveError,
@@ -10,7 +8,7 @@ var shared = require('./shared'),
     getTags = shared.getTags,
     ObjectId = require('mongoose').Types.ObjectId;
 
-exports = module.exports = function (Link) {
+module.exports = function (Link) {
   var routes = {};
 
   routes.new = function (req, res) {
@@ -24,7 +22,7 @@ exports = module.exports = function (Link) {
     if (checkAuth(req, res, 'admin'))
       return;
 
-    Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
+    Link.findOne({ _id: ObjectId.fromString(req.params.id) }, function (error, link) {
       if (checkError(error, req, res))
         return;
 
@@ -55,7 +53,7 @@ exports = module.exports = function (Link) {
     if (checkAuth(req, res, 'admin'))
       return;
 
-    Link.findOne({ _id: ObjectId.fromString(req.params['id']) }, function (error, link) {
+    Link.findOne({ _id: ObjectId.fromString(req.params.id) }, function (error, link) {
       if (checkError(error, req, res))
         return;
 
@@ -78,8 +76,8 @@ exports = module.exports = function (Link) {
   function buildLink(params, link) {
     link = link || new Link();
 
-    link.url = params['url'] || link.url;
-    link.text = params['text'] || link.text;
+    link.url = params.url || link.url;
+    link.text = params.text || link.text;
     link.tags = getTags(params) || link.tags;
 
     return link;

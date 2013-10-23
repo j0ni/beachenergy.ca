@@ -1,0 +1,7 @@
+{
+  "strict": true,
+  "globals": {
+    "exports": true
+  },
+  "node": true
+}

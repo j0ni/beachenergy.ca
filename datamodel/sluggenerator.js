@@ -1,7 +1,5 @@
 "use strict";
 
-/* global module */
-
 /* taken from mongoose exmple */
 
 module.exports = function (options) {

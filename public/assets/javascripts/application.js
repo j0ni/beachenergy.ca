@@ -1,4 +1,6 @@
 $(function () {
+  "use strict";
+
   var $modal = $('#modal');
   var $original = $modal.html();
 
@@ -100,19 +102,19 @@ $(function () {
   }
 
   $('.set-article-visible').live('change', function (event) {
-    setVisible(event, 'articles')
+    setVisible(event, 'articles');
   });
 
   $('.set-image-visible').live('change', function (event) {
-    setVisible(event, 'images')
+    setVisible(event, 'images');
   });
 
   $('.set-doc-visible').live('change', function (event) {
-    setVisible(event, 'docs')
+    setVisible(event, 'docs');
   });
 
   $('.set-link-visible').live('change', function (event) {
-    setVisible(event, 'links')
+    setVisible(event, 'links');
   });
 
   $('.login').live('click', function (event) {
@@ -167,7 +169,7 @@ $(function () {
 
   $('.thumbnail').live('click', function (event) {
     event.preventDefault();
-    $img = $(event.target);
+    var $img = $(event.target);
     $.ajax({
       url: $img.parent().attr('href'),
       dataType: 'html'

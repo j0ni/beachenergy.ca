@@ -1,13 +1,11 @@
 "use strict";
 
-/* global require, module, console, exports */
-
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10;
 
-var UserSchema = exports = module.exports = new Schema({
+var UserSchema = module.exports = new Schema({
   firstname: {type: String, required: false, trim: true},
   lastname: {type: String, required: false, trim: true},
   email: {type: String, required: true, index: { unique: true }},

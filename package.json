@@ -3,7 +3,7 @@
   "description": "Beach Energy Website",
   "version": "0.0.1",
   "private": true,
-  "author": "Jonathan Irving <j@lollyshouse.net>",
+  "author": "Jonathan Irving <j@lollyshouse.ca>",
   "repository": {
     "type": "git",
     "url": "git://github.com/j0ni/beachenergy.ca.git"
@@ -32,6 +32,7 @@
     "mocha": "*",
     "should": "*",
     "supertest": "*",
-    "superagent": "*"
+    "superagent": "*",
+    "jshint": "~2.3.0"
   }
 }

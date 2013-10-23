@@ -1,7 +1,5 @@
 "use strict";
 
-/* global require, module, exports, console */
-
 var UserSchema = require('./user'),
     LinkSchema = require('./link'),
     ArticleSchema = require('./article'),
@@ -9,7 +7,7 @@ var UserSchema = require('./user'),
     DocSchema = require('./doc'),
     FormSchema = require('./form');
 
-exports = module.exports = function (connection) {
+module.exports = function (connection) {
   var models = {};
 
   models.User = getModel('User', UserSchema);

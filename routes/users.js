@@ -1,13 +1,11 @@
 "use strict";
 
-/* global require, exports, console, module */
-
 var util = require('util'),
     shared = require('./shared'),
     checkError = shared.checkError,
     checkSaveError = shared.checkSaveError;
 
-exports = module.exports = function (User) {
+module.exports = function (User) {
   var routes = {};
 
   routes.new = function (req, res) {
@@ -17,7 +15,7 @@ exports = module.exports = function (User) {
   routes.create = function (req, res) {
     var user = buildUser(req.body);
 
-    user.changePassword(req.body['password'], req.body['confirm'], function (error, user) {
+    user.changePassword(req.body.password, req.body.confirm, function (error, user) {
       if (error) {
         req.flash('error', error);
         res.redirect('/');
@@ -40,8 +38,8 @@ exports = module.exports = function (User) {
 
       user = buildUser(req.body, user);
 
-      if (req.body['password'] && req.body['password'].trim()) {
-        user.changePassword(req.body['password'], req.body['confirm'], function (error, user) {
+      if (req.body.password && req.body.password.trim()) {
+        user.changePassword(req.body.password, req.body.confirm, function (error, user) {
           if (error) {
             req.flash('error', error);
             res.redirect('/');
@@ -78,9 +76,9 @@ exports = module.exports = function (User) {
   function buildUser(params, user) {
     user = user || new User();
 
-    user.firstname = params['firstname'] || user.firstname;
-    user.lastname = params['lastname'] || user.lastname;
-    user.email = params['email'] || user.email;
+    user.firstname = params.firstname || user.firstname;
+    user.lastname = params.lastname || user.lastname;
+    user.email = params.email || user.email;
 
     return user;
   }

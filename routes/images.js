@@ -1,14 +1,12 @@
 "use strict";
 
-/* global require, console, exports, module */
-
 var shared = require('./shared'),
     checkError = shared.checkError,
     checkSaveError = shared.checkSaveError,
     checkAuth = shared.checkAuth,
     files = require('./files');
 
-exports = module.exports = function (Image) {
+module.exports = function (Image) {
   var routes = {};
 
   routes.index = function (req, res) {

@@ -1,7 +1,5 @@
 "use strict";
 
-/* global require, exports, console, module */
-
 var _ = require('underscore'),
     util = require('util'),
     markdown = require('../lib/markdown'),
@@ -12,7 +10,7 @@ var _ = require('underscore'),
     getQuery = shared.getQuery,
     getTags = shared.getTags;
 
-exports = module.exports = function (Article) {
+module.exports = function (Article) {
   var routes = {};
 
   routes.index = function (req, res) {
@@ -27,7 +25,7 @@ exports = module.exports = function (Article) {
 
   routes.show = function (req, res) {
     var query = getQuery(req);
-    query.slug = req.params['article'];
+    query.slug = req.params.article;
 
     Article.findOne(query, function (error, article) {
       if (checkError(error, req, res))
@@ -54,7 +52,7 @@ exports = module.exports = function (Article) {
     if (checkAuth(req, res, 'writer'))
       return;
 
-    Article.findOne({ slug: req.params['article'] }, function (error, article) {
+    Article.findOne({ slug: req.params.article }, function (error, article) {
       if (checkError(error, req, res))
         return;
 
@@ -66,7 +64,7 @@ exports = module.exports = function (Article) {
 
       sendForm(article, res);
     });
-  }
+  };
 
   routes.create = function (req, res) {
     if (checkAuth(req, res, 'writer'))
@@ -79,13 +77,13 @@ exports = module.exports = function (Article) {
       req.flash('success', 'Article successfully created');
       res.redirect('/');
     });
-  }
+  };
 
   routes.update = function (req, res) {
     if (checkAuth(req, res, 'writer', req.path))
       return;
 
-    Article.findOne( {slug: req.params['article'] }, function (error, article) {
+    Article.findOne({ slug: req.params.article }, function (error, article) {
       if (checkError(error, req, res))
         return;
 
@@ -106,14 +104,14 @@ exports = module.exports = function (Article) {
         return;
       });
     });
-  }
+  };
 
   function buildArticle(params, article) {
     article = article || new Article();
 
-    article.title = params['title'] || article.title;
-    article.author = params['author'] || article.author;
-    article.content = params['content'] || article.content;
+    article.title = params.title || article.title;
+    article.author = params.author || article.author;
+    article.content = params.content || article.content;
     article.tags = getTags(params) || article.tags;
 
     return article;

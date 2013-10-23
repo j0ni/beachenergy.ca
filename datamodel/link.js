@@ -1,11 +1,9 @@
 "use strict";
 
-/* global module, require, exports */
-
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var LinkSchema = exports = module.exports = new Schema({
+var LinkSchema = module.exports = new Schema({
   url: {type: String, required: true, index: 1},
   text: {type: String, required: false},
   tags: [String],

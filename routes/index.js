@@ -1,11 +1,9 @@
 "use strict";
 
-/* global require, exports, module */
-
 var markdown = require('../lib/markdown'),
     async = require('async');
 
-exports = module.exports = function (models) {
+module.exports = function (models) {
   var routes = {};
 
   routes.articles = require('./articles')(models.Article);
@@ -56,7 +54,7 @@ exports = module.exports = function (models) {
         markdown: markdown
       });
     });
-  }
+  };
 
   return routes;
 };

@@ -1,7 +1,5 @@
 "use strict";
 
-/* global require, exports, console */
-
 var shared = require('./shared'),
     getQuery = shared.getQuery,
     checkError = shared.checkError,
@@ -10,33 +8,33 @@ var shared = require('./shared'),
     checkSaveError = shared.checkSaveError,
     fs = require('fs');
 
-exports.index = function (req, res, model, callback) {
+exports.index = function (req, res, Model, callback) {
   var limit = parseInt(req.query.limit) || 5;
-  model.find(getQuery(req))
+  Model.find(getQuery(req))
     .limit(limit)
     .sort('-updated_at')
     .select('title slug tags updated_at filename')
     .exec(callback);
 };
 
-exports.show = function (req, res, model, callback) {
+exports.show = function (req, res, Model, callback) {
   var query = getQuery(req);
-  query.slug = req.params['slug'];
-  model.findOne(query, callback);
+  query.slug = req.params.slug;
+  Model.findOne(query, callback);
 };
 
-exports.new = function (req, res, model) {
+exports.new = function (req, res, Model) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  sendForm(new model(), res);
+  sendForm(new Model(), res);
 };
 
-exports.edit = function (req, res, model) {
+exports.edit = function (req, res, Model) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  model.findOne({slug: req.params['slug']}, function (error, file) {
+  Model.findOne({slug: req.params.slug}, function (error, file) {
     if (checkError(error, req, res))
       return;
 
@@ -50,18 +48,18 @@ exports.edit = function (req, res, model) {
   });
 };
 
-exports.create = function (req, res, model, callback) {
+exports.create = function (req, res, Model, callback) {
   if (checkAuth(req, res, 'writer'))
     return;
 
-  buildFile(req, model).save(callback);
+  buildFile(req, Model).save(callback);
 };
 
-exports.update = function (req, res, model, callback) {
+exports.update = function (req, res, Model, callback) {
   if (checkAuth(req, res, 'writer', req.path))
     return;
 
-  model.findOne({slug: req.params['slug']}, function (error, file) {
+  Model.findOne({slug: req.params.slug}, function (error, file) {
     if (error) return callback(error);
     if (!file) return callback('File not found');
 
@@ -84,10 +82,10 @@ function sendForm(file, res) {
   res.render('files/form', { file: file });
 }
 
-function buildFile(req, model, file) {
-  file = file || new model();
+function buildFile(req, Model, file) {
+  file = file || new Model();
 
-  file.title = req.body['title'] || file.title;
+  file.title = req.body.title || file.title;
   file.tags = getTags(req.body) || file.tags;
   file.type = req.files.file.type || file.type;
   file.filename = req.files.file.path.substring(req.files.file.path.lastIndexOf('/')) || file.filename;

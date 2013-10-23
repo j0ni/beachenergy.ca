@@ -1,0 +1,4 @@
+node_modules/
+test/
+views/
+public/assets/libs/

@@ -2,8 +2,6 @@
 
 var _ = require('underscore');
 
-/* global require, console, exports */
-
 exports.checkAuth = function (req, res, role, redirect) {
   role = role || 'admin';
   redirect = redirect || '/';
@@ -25,12 +23,12 @@ function checkError(error, req, res, redirect) {
     res.redirect(redirect);
     return true;
   }
-};
+}
 
 exports.checkSaveError = function (error, req, res, redirect) {
   redirect = redirect || '/';
 
-  if (error && error['name'] && error['name'] === 'ValidationError') {
+  if (error && error.name && error.name === 'ValidationError') {
     req.flash('error', formatValidationErrors(error));
     res.redirect(redirect);
     return true;
@@ -47,7 +45,7 @@ exports.getQuery = function (req) {
 };
 
 exports.getTags = function (params) {
-  var tags = params['tags'] || '';
+  var tags = params.tags || '';
   tags = tags.split(/ +/);
   tags = _.select(tags, function (tag) { return tag.length > 0; });
   if (tags.length > 0)

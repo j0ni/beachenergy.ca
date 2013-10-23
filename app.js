@@ -1,7 +1,5 @@
 "use strict";
 
-/* global require, process, console, __dirname, exports, module */
-
 var express = require('express'),
     makeRoutes = require('./routes'),
     makeModels = require('./datamodel'),
@@ -12,7 +10,7 @@ var express = require('express'),
     util = require('util'),
     MongoStore = require('connect-mongo')(express);
 
-exports = module.exports = function (connection) {
+module.exports = function (connection) {
   var app = express(),
       models = makeModels(connection),
       routes = makeRoutes(models);

@@ -1,11 +1,9 @@
-"use strict";
-
-/* global require, module, exports, process */
-
 var makeModels = require('../datamodel'),
     async = require('async');
 
-exports = module.exports = function (connection) {
+module.exports = function (connection) {
+  "use strict";
+
   var fixtures = {};
   var models = makeModels(connection);
 

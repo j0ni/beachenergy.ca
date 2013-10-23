@@ -1,12 +1,10 @@
 "use strict";
 
-/* global require, module, exports */
-
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     slugmaker = require('./sluggenerator');
 
-var DocSchema = exports = module.exports = new Schema({
+var DocSchema = module.exports = new Schema({
   title: {type: String, required: true},
   slug: {type: String, required: true, lowecase: true, trim: true},
   tags: [String],

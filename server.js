@@ -1,7 +1,5 @@
 "use strict";
 
-/* global require, console */
-
 var mongoose = require('mongoose'),
     config = require('./config'),
     makeApp = require('./app'),

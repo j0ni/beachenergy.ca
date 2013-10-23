@@ -1,11 +1,9 @@
 "use strict";
 
-/* global require, module, exports */
-
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var FormSchema = exports = module.exports = new Schema({
+var FormSchema = module.exports = new Schema({
   form: {type: String, required: true},
   user: {type: String},
   content: {},
