@@ -1,0 +1,23 @@
+[
+  {
+    "firstname": "Simon",
+    "lastname": "Spoon",
+    "email": "simon@spoon.com",
+    "password": "dog",
+    "role": "consumer"
+  },
+  {
+    "firstname": "Boss",
+    "lastname": "Geezer",
+    "email": "boss@geezer.com",
+    "password": "cat",
+    "role": "admin"
+  },
+  {
+    "firstname": "Author",
+    "lastname": "Author",
+    "email": "author@author.com",
+    "password": "lobster",
+    "role": "writer"
+  }
+]

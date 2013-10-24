@@ -1,47 +1,41 @@
 "use strict";
 
-/* global require, describe, it, before, beforeEach, after, afterEach */
-
 var makeApp = require('../app'),
     mongoose = require('mongoose'),
-    assert = require('should'),
+    should = require('should'),
+    util = require('util'),
     request = require('supertest'),
-    makeFixtures = require('./fixtures'),
+    mongo = require('./fixtures'),
     superagent = require('superagent');
 
 describe('routing', function () {
-  var connection;
+  // var connection;
   var app;
   var fixtures;
 
   before(function (done) {
-    connection = mongoose.createConnection('mongodb://127.0.0.1/beachenergy-test');
-    connection.once('open', function () {
+    mongo.connect(function (error, connection) {
       app = makeApp(connection);
-      fixtures = makeFixtures(connection);
+      fixtures = mongo.makeFixtures(app.get('models'));
       done();
     });
   });
 
   beforeEach(function (done) {
-    fixtures.load(function (error) {
-      assert(error === null);
+    fixtures.loadAll(function (error) {
+      should.not.exist(error);
       done();
     });
   });
 
-
   afterEach(function (done) {
-    fixtures.unload(function (error) {
-      assert(error === null);
-      done();
-    });
+    fixtures.unloadAll(done);
   });
 
   after(function (done) {
-    connection.close(function (error) {
-      assert(error === undefined);
-      done();
+    fixtures.unloadAll(function (error) {
+      should.not.exist(error);
+      mongo.disconnect(done);
     });
   });
 
@@ -51,10 +45,9 @@ describe('routing', function () {
       .type('form')
       .send({ username: email, password: password })
       .end(function (error, res) {
-        assert(error === null);
-        var agent = superagent.agent();
-        agent.saveCookies(res);
-        return callback(agent);
+        if (error) return callback(error);
+        var cookies = res.headers['set-cookie'].pop().split(';')[0];
+        return callback(null, cookies);
       });
   }
 
@@ -180,13 +173,16 @@ describe('routing', function () {
         });
 
         it('shows a logged in email address after redirect to GET /', function (done) {
-          loginUser('simon@spoon.com', 'dog', function (agent) {
-            var req = request(app).get('/');
-            agent.attachCookies(req);
-            req.end(function (error, res) {
-              res.text.should.include('simon');
-              done();
-            });
+          loginUser('simon@spoon.com', 'dog', function (error, cookies) {
+            should.not.exist(error);
+
+            request(app)
+              .get('/')
+              .set('Cookie', cookies)
+              .end(function (error, res) {
+                res.text.should.include('simon');
+                done();
+              });
           });
         });
       });

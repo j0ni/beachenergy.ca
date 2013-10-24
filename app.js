@@ -15,6 +15,10 @@ module.exports = function (connection) {
       models = makeModels(connection),
       routes = makeRoutes(models);
 
+  app.configure('test', function () {
+    app.set('models', models); // so the tests can get them
+  });
+
   passport.serializeUser(function (user, done) {
     done(null, user.email);
   });
@@ -29,8 +33,7 @@ module.exports = function (connection) {
     function (email, password, done) {
       process.nextTick(function () {
         models.User.findByEmail(email, function (error, user) {
-          if (error)
-            return done(error);
+          if (error) return done(error);
 
           if (!user) {
             return done(null, false, { message: 'Unknown user ' + email });
