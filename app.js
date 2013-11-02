@@ -15,37 +15,33 @@ module.exports = function (connection) {
       models = makeModels(connection),
       routes = makeRoutes(models);
 
-  app.configure('test', function () {
-    app.set('models', models); // so the tests can get them
-  });
-
   passport.serializeUser(function (user, done) {
     done(null, user.email);
   });
 
   passport.deserializeUser(function (email, done) {
+    console.log('going to deserialize ' + email);
     models.User.findByEmail(email, function (error, user) {
+      console.log('got a user ' + util.inspect(user));
       done(error, user);
     });
   });
 
   passport.use(new LocalStrategy(
     function (email, password, done) {
-      process.nextTick(function () {
-        models.User.findByEmail(email, function (error, user) {
-          if (error) return done(error);
+      models.User.findByEmail(email, function (error, user) {
+        if (error) return done(error);
 
-          if (!user) {
-            return done(null, false, { message: 'Unknown user ' + email });
+        if (!user) {
+          return done(null, false, { message: 'Unknown user ' + email });
+        }
+
+        user.comparePassword(password, function (error, match) {
+          if (match) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: 'Username and password did not match' });
           }
-
-          user.comparePassword(password, function (error, match) {
-            if (match) {
-              return done(null, user);
-            } else {
-              return done(null, false, { message: 'Username and password did not match' });
-            }
-          });
         });
       });
     }

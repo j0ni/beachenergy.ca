@@ -20,32 +20,31 @@ exports.makeFixtures = function (models) {
 
   return fixtures;
 
-  function loadDocs(model, callback) {
-    mongodb.cleanupCollection(model, function (error) {
+  function loadDocs(Model, callback) {
+    mongodb.cleanupCollection(Model, function (error) {
       if (error) return callback(error);
 
-      async.forEach(dataFor(model), function (row, cb) {
-        new model(row).save(function (error, instance) {
+      async.forEach(dataFor(Model), function (row, cb) {
+        (new Model(row)).save(function (error, instance) {
           if (error) return cb(error);
-          addToCache(model, instance);
-
+          addToCache(Model, instance);
           return cb();
         });
       }, callback);
     });
   };
 
-  function dataFor(model) {
-    return require('./' + model.modelName.toLowerCase() + 's');
+  function dataFor(Model) {
+    return require('./' + Model.modelName.toLowerCase() + 's');
   }
 
-  function cachedDataFor(model) {
-    return cache[model.modelName];
+  function cachedDataFor(Model) {
+    return cache[Model.modelName];
   }
 
-  function addToCache(model, doc) {
-    if (!cache[model.modelName]) cache[model.modelName] = [];
-    cache[model.modelName].push(doc);
+  function addToCache(Model, doc) {
+    if (!cache[Model.modelName]) cache[Model.modelName] = [];
+    cache[Model.modelName].push(doc);
   }
 };
 

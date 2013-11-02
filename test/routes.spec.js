@@ -3,53 +3,42 @@
 var makeApp = require('../app'),
     mongoose = require('mongoose'),
     should = require('should'),
-    util = require('util'),
     request = require('supertest'),
     mongo = require('./fixtures'),
-    superagent = require('superagent');
+    util = require('util'),
+    loginFactory = require('./util/login-user');
 
 describe('routing', function () {
-  // var connection;
-  var app;
-  var fixtures;
-
-  before(function (done) {
-    mongo.connect(function (error, connection) {
-      app = makeApp(connection);
-      fixtures = mongo.makeFixtures(app.get('models'));
-      done();
-    });
-  });
+  var app,
+      fixtures,
+      login,
+      connection;
 
   beforeEach(function (done) {
-    fixtures.loadAll(function (error) {
-      should.not.exist(error);
-      done();
+    mongo.connect(function (error, _connection) {
+      connection = _connection;
+      app = makeApp(connection);
+      fixtures = mongo.makeFixtures(connection.models);
+      login = loginFactory(app);
+
+      fixtures.loadAll(function (error) {
+        should.not.exist(error);
+        done();
+      });
     });
   });
 
   afterEach(function (done) {
-    fixtures.unloadAll(done);
-  });
-
-  after(function (done) {
     fixtures.unloadAll(function (error) {
       should.not.exist(error);
-      mongo.disconnect(done);
+      console.log('connection is ' + util.inspect(connection));
+      mongo.disconnect(function (error) {
+        should.not.exist(error);
+        console.log('connection is now ' + util.inspect(connection));
+        done();
+      });
     });
   });
-
-  function loginUser(email, password, callback) {
-    request(app)
-      .post('/users/login')
-      .type('form')
-      .send({ username: email, password: password })
-      .end(function (error, res) {
-        if (error) return callback(error);
-        var cookies = res.headers['set-cookie'].pop().split(';')[0];
-        return callback(null, cookies);
-      });
-  }
 
   describe('GET /', function () {
     it('succeeds', function (done) {
@@ -173,10 +162,11 @@ describe('routing', function () {
         });
 
         it('shows a logged in email address after redirect to GET /', function (done) {
-          loginUser('simon@spoon.com', 'dog', function (error, cookies) {
+          login('simon@spoon.com', 'dog', function (error, server, cookies) {
             should.not.exist(error);
 
-            request(app)
+            // request(app)
+            server
               .get('/')
               .set('Cookie', cookies)
               .end(function (error, res) {

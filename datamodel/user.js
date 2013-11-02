@@ -71,10 +71,16 @@ UserSchema.methods.canActAs = function (role) {
   if (actual <= required) return true;
 };
 
+var util = require('util');
+
 UserSchema.statics.findByEmail = function (email, callback) {
+  console.log('in findByEmail');
+  console.log('this is ' + util.inspect(this));
   this.findOne({email: email}, function (error, user) {
     if (error) return callback(error);
     if (!user) return callback();
+
+    console.log('got the user: ' + util.inspect(user));
 
     user.originalPassword = user.password;
     callback(undefined, user);

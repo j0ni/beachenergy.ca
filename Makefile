@@ -1,4 +1,4 @@
-TESTS = "test/*.spec.js"
+TESTS = "test/**/*.spec.js"
 REPORTER = list
 TIMEOUT = 100000
 MOCHA = ./node_modules/.bin/mocha

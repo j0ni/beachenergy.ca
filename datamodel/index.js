@@ -7,7 +7,7 @@ var UserSchema = require('./user'),
     DocSchema = require('./doc'),
     FormSchema = require('./form');
 
-module.exports = function (connection) {
+module.exports = function makeModels(connection) {
   var models = {};
 
   models.User = getModel('User', UserSchema);
@@ -18,11 +18,7 @@ module.exports = function (connection) {
   models.Form = getModel('Form', FormSchema);
 
   function getModel(name, schema) {
-    try {
-      return connection.model(name);
-    } catch (e) {
-      return connection.model(name, schema);
-    }
+    return connection.model(name, schema);
   }
 
   return models;

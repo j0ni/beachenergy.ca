@@ -16,6 +16,7 @@ module.exports = function (models) {
 
   routes.index = function (req, res) {
     var visible = { visible: true };
+    console.log('in the index');
 
     async.parallel([
       function (callback) {
