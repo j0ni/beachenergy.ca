@@ -1,6 +1,8 @@
 beachenergy.ca
 ==============
 
+[![Build Status](https://travis-ci.org/j0ni/beachenergy.ca.png?branch=master)](https://travis-ci.org/j0ni/beachenergy.ca)
+
 I wrote this to support a local clean energy co-op, beachenergy.ca. A
 while back, the co-op switched to some regular CMS solution, supported
 by someone with more time than me.
