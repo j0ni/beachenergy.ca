@@ -23,7 +23,7 @@ test: npm
 		--reporter $(REPORTER) \
 		$(TESTS)
 
-test-ci: npm-install
+test-ci: jshint npm
 	@NODE_ENV=test $(MOCHA) \
 		--timeout $(TIMEOUT) \
 		--reporter $(REPORTER) \

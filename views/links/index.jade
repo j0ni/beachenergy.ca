@@ -3,6 +3,6 @@ ul.unstyled.span4
     li
       a(href=link.url)= link.text
       if currentUser.canActAs('admin')
-        &nbsp;|&nbsp;
+        | &nbsp;|&nbsp;
         small
           a(href='/links/'+link._id+'/edit', class='edit-link') edit

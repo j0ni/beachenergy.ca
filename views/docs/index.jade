@@ -3,6 +3,6 @@ ul.unstyled.span4
     li
       a(href='/docs/'+doc.slug, class='doc-link') #{doc.title}
       if currentUser.canActAs('admin')
-        &nbsp;|&nbsp;
+        | &nbsp;|&nbsp;
         small
           a(href='/docs/'+doc.slug+'/edit', class='edit-doc') edit

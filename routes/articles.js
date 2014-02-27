@@ -14,13 +14,17 @@ module.exports = function (Article) {
   var routes = {};
 
   routes.index = function (req, res) {
-    Article.find(getQuery(req), null, { limit: 3, sort: [['updated_at', -1]] }, function (error, docs) {
-      if (checkError(error, req, res))
-        return;
+    Article
+      .find(getQuery(req))
+      .limit(3)
+      .sort('-updated_at')
+      .exec(function (error, docs) {
+        if (checkError(error, req, res))
+          return;
 
-      docs = docs || [];
-      res.render('articles/index', { articles: docs, markdown: markdown });
-    });
+        docs = docs || [];
+        res.render('articles/index', { articles: docs, markdown: markdown });
+      });
   };
 
   routes.show = function (req, res) {
